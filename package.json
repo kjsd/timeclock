@@ -1,16 +1,15 @@
 {
-  "name": "appengine-hello-world",
-  "description": "Simple Hello World Node.js sample for Google App Engine",
+  "name": "timeclock",
+  "description": "TimeClock",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
-  "author": "Google Inc.",
+  "author": "KJSD",
   "engines": {
     "node": "~4.2"
   },
   "scripts": {
     "start": "node app.js",
-    "monitor": "nodemon app.js",
     "deploy": "gcloud preview app deploy"
   },
   "dependencies": {
