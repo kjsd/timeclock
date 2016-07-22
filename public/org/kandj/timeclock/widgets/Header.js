@@ -48,6 +48,7 @@ define([
         },
 
         login: function() {
+
         },
 
         getAboutWidget: function() {
