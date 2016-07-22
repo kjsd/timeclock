@@ -1,0 +1,181 @@
+html, body {
+   height : 100%;
+   width : 100%;
+   margin: 0;
+   padding: 0;
+}
+
+.header {
+}
+
+.tcRed
+{
+   color: red;
+}
+
+.tcBlack
+{
+   color: black;
+}
+
+.tcHomeIcon
+{
+   background-image: url("images/home.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcInfoIcon
+{
+   background-image: url("images/information.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcUserMaleIcon
+{
+   background-image: url("images/user-male.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcUserFemaleIcon
+{
+   background-image: url("images/user-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcUserBusinessIcon
+{
+   background-image: url("images/user-business.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcUserBusinessBossIcon
+{
+   background-image: url("images/user-business-boss.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 24px;
+   height: 24px;
+}
+
+.tcCheckIcon
+{
+   background-image: url("images/tick.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcDeleteIcon
+{
+   background-image: url("images/eraser--arrow.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableInsertIcon
+{
+   background-image: url("images/table-insert-row.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableDeleteIcon
+{
+   background-image: url("images/table-delete-row.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcExclamationIcon
+{
+   background-image: url("images/exclamation.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUsersIcon
+{
+   background-image: url("images/users.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserInfoIcon
+{
+   background-image: url("images/user-silhouette-question.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcPdfIcon
+{
+   background-image: url("images/document-pdf.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcCsvIcon
+{
+   background-image: url("images/document-excel-csv.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcKeyEditIcon
+{
+   background-image: url("images/key--pencil.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcSaveIcon
+{
+   background-image: url("images/disk.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableImportIcon
+{
+   background-image: url("images/table-import.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
