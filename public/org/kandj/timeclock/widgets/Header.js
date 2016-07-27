@@ -9,7 +9,6 @@ define([
             TooltipDialog, DropDownButton) {
     return declare(Toolbar, {
         baseClass: 'header',
-
         user_btn: null,
 
         // @Override
