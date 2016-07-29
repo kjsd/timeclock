@@ -16,9 +16,9 @@ passport.use(
     callbackURL: process.env.BASE_URL + '/auth/google/callback'
   }, function(accessToken, refreshToken, profile, done) {
     // tbd.
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
+    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    // return done(err, user);
+    // });
   }));
 
 app.use('/rest/*',
