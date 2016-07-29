@@ -1,4 +1,13 @@
 # [START app_yaml]
 runtime: nodejs
 vm: true
+
+# [START env_variables]
+env_variables:
+    BASE_URL: http://timeclock.kandj.org
+    GCLOUD_PROJECT: timeclock-1355
+    GOOGLE_CLIENT_ID: 297000402789-nubthf0guot6kfa1696qq7i82mi5494g.apps.googleusercontent.com
+    GOOGLE_CLIENT_SECRET: LQqYLbHbCDN-sxuyqYzRz3_J
+# [END env_variables]
+
 # [END app_yaml]
