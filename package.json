@@ -10,11 +10,11 @@
   },
   "scripts": {
     "start": "node app.js",
-    "deploy": "gcloud preview app deploy"
+    "deploy": "gcloud app deploy"
   },
   "dependencies": {
     "express": "^4.13.4",
-    "gcloud": "^0.37.0",
+    "google-cloud": "^0.39.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0"
   }
