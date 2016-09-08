@@ -8,28 +8,25 @@ define([
 ], function(declare, domStyle, Toolbar, ToolbarSeparator,
             TooltipDialog, DropDownButton) {
   return declare(Toolbar, {
-    baseClass: 'header',
     user_btn: null,
+    style: "margin: 0; padding: 0;",
 
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
-      var right = new Toolbar({
-        style: "float: right; margin: 0; padding: 0;"
-      });
-      right.addChild(new ToolbarSeparator());
-      right.addChild(this.getAboutWidget());
-      this.addChild(right);
-
       this.user_btn = new DropDownButton({
         label: "Login...",
-        style: "font-weight: bold;",
-        showLabel: true,
-        disabled: true
+        //style: "font-weight: bold;",
+        iconClass: "tcUserMaleIcon",
+        showLabel: false
+        //disabled: true
       });
       this.addChild(this.user_btn);
       this.addChild(new ToolbarSeparator());
+
+
+      this.addChild(this.getAboutWidget());
 
       this.login();
     },
@@ -65,6 +62,7 @@ define([
       return new DropDownButton({
         label: "About Timeclock",
         iconClass: "tcInfoIcon",
+        style: "float: right;",
         showLabel: false,
         dropDown: about
       });

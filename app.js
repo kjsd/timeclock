@@ -8,6 +8,7 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 // views
 app.use(express.static(__dirname + '/public'));
 
+/* tbd.
 // control APIs are protected with Google OAuth2
 passport.use(
   new GoogleStrategy({
@@ -30,7 +31,7 @@ app.use('/rest/*',
 app.get('/auth/google/callback',
         passport.authenticate('google', { successRedirect: '/',
                                           failureRedirect: '/login' }));
-
+*/
 
 var server = app.listen(process.env.PORT || '3000', function () {
   console.log('App listening on port %s', server.address().port);
