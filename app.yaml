@@ -14,16 +14,6 @@ resources:
   cpu: .2
   memory_gb: .15
 
-# [START handlers]
-handlers:
-- url: /images
-  static_dir: images
-
-- url: /css
-  static_dir: css
-
-# [END handlers]
-
 # [START env_variables]
 env_variables:
     BASE_URL: 'http://timeclock.kandj.org'
