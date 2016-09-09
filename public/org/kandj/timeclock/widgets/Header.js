@@ -51,7 +51,7 @@ define([
       var about = new TooltipDialog({
         style: 'width: 400px;',
         content: '<div>'
-          + '<p>TimeClock / TAG</p>'
+          + '<p>TimeClock / v0.0.1</p>'
           + '<hr />'
           + '<p>Copyright (c) 2016 K&J Software Design Corp. '
           + 'All Rights Reserved.</p>'
