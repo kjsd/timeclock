@@ -8,7 +8,13 @@ router.get('/false', function(req, res) {
   res.sendStatus(401);
 });
 
-router.use('/users', require('./users'));
+// tbd. stub
+router.get('/me', function(req, res) {
+  res.send({
+    id: 'sample1',
+    name: 'Sample User'
+  });
+});
 
 
 module.exports = router;

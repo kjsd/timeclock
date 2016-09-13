@@ -1,5 +1,7 @@
 'use strict';
 
+require('app-module-path').addPath(__dirname + '/modules');
+
 var express = require('express');
 var app = express();
 var device = require('express-device');
@@ -25,6 +27,9 @@ app.get('/', function(req, res) {
   res.render('index.ejs');
 });
 
+// controllers
+// tbd. 
+app.use('/res', require('main'));
 
 /* tbd.
 // control APIs are protected with Google OAuth2
@@ -40,11 +45,11 @@ passport.use(
     // });
   }));
 
-app.use('/rest/*',
+app.use('/res/*',
         passport.authenticate(
           'google',
           { scope: ['https://www.googleapis.com/auth/plus.login'] }
-        ), require('./rest/main'));
+        ), require('main'));
 
 app.get('/auth/google/callback',
         passport.authenticate('google', { successRedirect: '/',
