@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>TimeClock</title>
+    <meta charset="utf-8" />
+
+    <% if (is_desktop) { %>
+      <link rel="stylesheet"
+            href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/soria/soria.css"
+            media="screen" />
+    <% } else { %>
+      <meta name="viewport"
+            content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+      <meta name="apple-mobile-web-app-capable" content="yes"/>
+      <meta http-equiv="cache-control" content="no-cache">
+      <meta http-equiv="pragma" content="no-cache">
+    <% } %>
+
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+  </head>
+
+  <body <% if (is_desktop) { %>class="soria"<% } %> >
+    <script>
+     // Instead of using data-dojo-config, we're creating a dojoConfig
+     // object *before* we load dojo.js; they're functionally identical,
+     // it's just easier to read this approach with a larger configuration.
+     var dojoConfig = {
+       isDebug: true,
+       async: true,
+       packages: [{
+         name: "timeclock",
+         location: location.pathname.replace(/\/[^/]*$/, '')
+                 + '/org/kandj/timeclock'
+       }]
+     };
+    </script>
+
+    <% if (!is_desktop) { %>
+      <script
+          src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojox/mobile/deviceTheme.js">
+      </script>
+    <% } %>
+    <script
+        src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js">
+    </script>
+    <script>
+     require([
+       <% if (is_desktop) { %>
+       'timeclock/desktop'
+       <% } else { %>
+       'timeclock/mobile'
+       <% } %>
+     ]);
+    </script>
+  </body>
+</html>

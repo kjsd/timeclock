@@ -2,11 +2,29 @@
 
 var express = require('express');
 var app = express();
+var device = require('express-device');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // views
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/views'));
+
+app.set('view engine', 'ejs');
+app.set('view options', { layout: false });
+app.set('views', __dirname + '/views');
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(device.capture());
+
+device.enableDeviceHelpers(app);
+
+app.get('/', function(req, res) {
+  res.render('index.ejs');
+});
+
 
 /* tbd.
 // control APIs are protected with Google OAuth2
