@@ -12,7 +12,8 @@ router.get('/false', function(req, res) {
 router.get('/me', function(req, res) {
   res.send({
     id: 'sample1',
-    name: 'Sample User'
+    name: 'Sample User',
+    iconClass: 'tcUserIcon'
   });
 });
 

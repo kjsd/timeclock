@@ -15,99 +15,10 @@ html, body {
    color: black;
 }
 
-.tcHomeIcon
-{
-   background-image: url("/images/home.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
 
-.tcInfoIcon
+.tcUserSilhouetteIcon
 {
-   background-image: url("/images/information.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
-
-.tcUserMaleIcon
-{
-   background-image: url("/images/user-male.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
-
-.tcUserFemaleIcon
-{
-   background-image: url("/images/user-female.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
-
-.tcUserBusinessIcon
-{
-   background-image: url("/images/user-business.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
-
-.tcUserBusinessBossIcon
-{
-   background-image: url("/images/user-business-boss.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 24px;
-   height: 24px;
-}
-
-.tcCheckIcon
-{
-   background-image: url("/images/tick.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 16px;
-   height: 16px;
-}
-
-.tcDeleteIcon
-{
-   background-image: url("/images/eraser--arrow.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 16px;
-   height: 16px;
-}
-
-.tcTableInsertIcon
-{
-   background-image: url("/images/table-insert-row.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 16px;
-   height: 16px;
-}
-
-.tcTableDeleteIcon
-{
-   background-image: url("/images/table-delete-row.png");
-   background-repeat: no-repeat;
-   background-position: center;
-   width: 16px;
-   height: 16px;
-}
-
-.tcExclamationIcon
-{
-   background-image: url("/images/exclamation.png");
+   background-image: url("../images/user-silhouette.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -116,16 +27,214 @@ html, body {
 
 .tcUsersIcon
 {
-   background-image: url("/images/users.png");
+   background-image: url("../images/users.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
    height: 16px;
 }
 
-.tcUserInfoIcon
+.tcUserUnknownIcon
 {
-   background-image: url("/images/user-silhouette-question.png");
+   background-image: url("../images/user-silhouette-question.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserIcon
+{
+   background-image: url("../images/user.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserBlackIcon
+{
+   background-image: url("../images/user-black.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserBlackFemaleIcon
+{
+   background-image: url("../images/user-black-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserBusinessIcon
+{
+   background-image: url("../images/user-business.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserBusinessBossIcon
+{
+   background-image: url("../images/user-business-boss.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserFemaleIcon
+{
+   background-image: url("../images/user-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserGreenIcon
+{
+   background-image: url("../images/user-green.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserGreenFemaleIcon
+{
+   background-image: url("../images/user-green-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserNudeIcon
+{
+   background-image: url("../images/user-nude.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserNudeFemaleIcon
+{
+   background-image: url("../images/user-nude-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserOrangeIcon
+{
+   background-image: url("../images/user-orange.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserOrangeFemaleIcon
+{
+   background-image: url("../images/user-orange-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserThiefIcon
+{
+   background-image: url("../images/user-thief.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserThiefBaldieIcon
+{
+   background-image: url("../images/user-thief-baldie.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserWhiteIcon
+{
+   background-image: url("../images/user-white.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcUserWhiteFemaleIcon
+{
+   background-image: url("../images/user-white-female.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcInfoIcon
+{
+   background-image: url("../images/information-frame.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcCheckIcon
+{
+   background-image: url("../images/tick.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcDeleteIcon
+{
+   background-image: url("../images/eraser--arrow.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableInsertIcon
+{
+   background-image: url("../images/table-insert-row.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableDeleteIcon
+{
+   background-image: url("../images/table-delete-row.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcExclamationIcon
+{
+   background-image: url("../images/exclamation.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -134,7 +243,7 @@ html, body {
 
 .tcPdfIcon
 {
-   background-image: url("/images/document-pdf.png");
+   background-image: url("../images/document-pdf.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -143,7 +252,7 @@ html, body {
 
 .tcCsvIcon
 {
-   background-image: url("/images/document-excel-csv.png");
+   background-image: url("../images/document-excel-csv.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -152,7 +261,7 @@ html, body {
 
 .tcKeyEditIcon
 {
-   background-image: url("/images/key--pencil.png");
+   background-image: url("../images/key--pencil.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -161,7 +270,7 @@ html, body {
 
 .tcSaveIcon
 {
-   background-image: url("/images/disk.png");
+   background-image: url("../images/disk.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;
@@ -170,7 +279,25 @@ html, body {
 
 .tcTableImportIcon
 {
-   background-image: url("/images/table-import.png");
+   background-image: url("../images/table-import.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcThumbIcon
+{
+   background-image: url("../images/thumb.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   width: 16px;
+   height: 16px;
+}
+
+.tcControlPowerIcon
+{
+   background-image: url("../images/control-power.png");
    background-repeat: no-repeat;
    background-position: center;
    width: 16px;

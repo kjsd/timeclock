@@ -1,34 +1,49 @@
 define([
   'dojo/_base/declare',
+  'dojo/_base/lang',
+  'dojo/request',
   'dojo/dom-style',
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/TooltipDialog',
-  'dijit/form/DropDownButton'
-], function(declare, domStyle, Toolbar, ToolbarSeparator,
-            TooltipDialog, DropDownButton) {
+  'dijit/form/DropDownButton',
+  'dijit/DropDownMenu',
+  'dijit/MenuItem',
+  'dijit/MenuSeparator',
+], function(declare, lang, request, domStyle, Toolbar, ToolbarSeparator,
+            TooltipDialog, DropDownButton, DropDownMenu, MenuItem,
+            MenuSeparator) {
   return declare(Toolbar, {
-    user_btn: null,
     style: "margin: 0; padding: 0;",
+    user: null,
+    user_btn: null,
+    label_anonymous: 'Anything else, noble sir?',
 
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
-      this.user_btn = new DropDownButton({
-        label: "Login...",
-        //style: "font-weight: bold;",
-        iconClass: "tcUserMaleIcon",
-        showLabel: false
-        //disabled: true
-      });
+      this.user_btn = this.getUserWidget();
       this.addChild(this.user_btn);
       this.addChild(new ToolbarSeparator());
-
-
       this.addChild(this.getAboutWidget());
 
-      this.login();
+      request('/res/me', {
+        handleAs: 'json'
+      }).then(lang.hitch(this, function(data) {
+        this.user = data;
+        this.user_btn.set('label', this.user.name);
+        this.user_btn.set('iconClass',
+                          (this.user.iconClass ?
+                           this.user.iconClass: 'tcUserSilhouetteIcon'));
+        this.user_btn.set('disabled', false);
+
+      }), lang.hitch(this, function(err) {
+        this.user = null;
+        this.user_btn.set('label', this.label_anonymous);
+        this.user_btn.set('iconClass', 'tcUserUnknownIcon');
+        this.user_btn.set('disabled', true);
+      }));
     },
 
     // @Override
@@ -43,8 +58,30 @@ define([
       this.inherited(arguments);
     },
 
-    login: function() {
+    getUserWidget: function() {
+      var menu = new DropDownMenu({ style: 'display: none;' });
+      menu.addChild(new MenuItem({
+        label: 'About you',
+        iconClass: 'tcUserUnknownIcon'
+      }));
+      menu.addChild(new MenuSeparator());
+      menu.addChild(new MenuItem({
+        label: 'Logout and Deactivate (dropped all data!)',
+        iconClass: 'tcThumbIcon'
+      }));
+      menu.addChild(new MenuItem({
+        label: 'Logout',
+        iconClass: 'tcControlPowerIcon'
+      }));
 
+      return new DropDownButton({
+        label: this.label_anonymous,
+        style: "font-weight: bold;",
+        iconClass: "tcUserUnknownIcon",
+        showLabel: true,
+        dropDown: menu,
+        disabled: true
+      });
     },
 
     getAboutWidget: function() {
