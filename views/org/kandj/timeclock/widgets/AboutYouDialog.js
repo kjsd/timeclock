@@ -82,7 +82,7 @@ define([
       var tbl = domConstruct.create('table', null, main);
       var tr = domConstruct.create('tr', null, tbl);
 
-      domConstruct.place('<td>Your breaktime length: </td>', tr);
+      domConstruct.place('<td>A breaktime length of a day: </td>', tr);
 
       this.breakTime = new IntervalTextBox({
         value: 'T01:00:00',
