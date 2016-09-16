@@ -3,8 +3,9 @@ define([
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
-  'timeclock/widgets/AboutYou'
-], function(declare, DropDownMenu, MenuItem, MenuSeparator, AboutYou) {
+  'timeclock/widgets/AboutYouDialog'
+], function(declare, DropDownMenu, MenuItem, MenuSeparator,
+            AboutYouDialog) {
   return declare(DropDownMenu, {
 
     // @Override
@@ -15,8 +16,7 @@ define([
         label: 'About you',
         iconClass: 'tcUserUnknownIcon',
         onClick: function() {
-          var d = new AboutYou();
-          d.show();
+          new AboutYouDialog().show();
         }
       }));
       this.addChild(new MenuSeparator());

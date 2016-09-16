@@ -4,13 +4,16 @@ define([
   'dojo/request',
   'dojo/dom-construct',
   'dojo/dom-attr',
-  'dojo/store/Memory',
-  'dijit/Dialog',
   'dijit/form/Select',
-  'dojox/form/TimeSpinner',
-], function(declare, lang, request, domConstruct, domAttr, Memory,
-            Dialog, Select, TimeSpinner) {
-  return declare(Dialog, {
+  'dijit/form/Button',
+  'dijitkj/IntervalTextBox',
+  'dijitkj/AutoDestroyDialog',
+  'timeclock/templates'
+], function(declare, lang, request, domConstruct, domAttr, Select,
+            Button, IntervalTextBox, AutoDestroyDialog, templates) {
+  return declare(AutoDestroyDialog, {
+    style: 'margin: 0; padding 0;',
+
     user: { id: '', name: '' },
     nameDom: null,
     breakTime: null,
@@ -22,13 +25,21 @@ define([
 
       this.set('title', 'About you');
 
-      var base = domConstruct.create('div',
-                                     { class: 'dijitDialogPaneContentArea' });
+      var base = domConstruct.create('div');
+      var main = domConstruct.create('div', {
+        class: 'dijitDialogPaneContentArea'
+      }, base);
       
-      var namepara = domConstruct.create('p', null, base);
+      var namepara = domConstruct.create('p', null, main);
 
       this.iconSelect = new Select({
         sortByLabel: false,
+        onChange: lang.hitch(this, function(v) {
+          if (this.iconSelect.get('value') == this.user.iconClass)
+            return;
+
+          console.log('tbd. put /res/users/me:iconClass');
+        }),
         options: [
           { value: 'tcUserIcon',
             label: '<div class="tcUserIcon" />' },
@@ -68,19 +79,34 @@ define([
         style: 'font-weight: bold; margin: 10px;'
       }, namepara);
 
-      var tbl = domConstruct.create('table', null, base);
+      var tbl = domConstruct.create('table', null, main);
       var tr = domConstruct.create('tr', null, tbl);
 
-      domConstruct.place('<td>A breaktime length: </td>', tr);
+      domConstruct.place('<td>Your breaktime length: </td>', tr);
 
-      this.breakTime = new TimeSpinner({
-        style: 'width: 100px',
-        smallDelta: 1,
-        largeDelta: 30,
-        value: '0:30'
+      this.breakTime = new IntervalTextBox({
+        value: 'T01:00:00',
+        onChange: lang.hitch(this, function(v) {
+          if (this.breakTime.get('interval') == this.user.breakTime)
+            return;
+
+          console.log('tbd. put /res/users/me');
+        })
       });
       domConstruct.place(this.breakTime.domNode,
                          domConstruct.create('td', null, tr));
+
+      var footer = domConstruct.create('div', {
+        class: 'dijitDialogPaneActionBar'
+      }, base);
+
+      var btn = new Button({
+        label: 'OK',
+        onClick: lang.hitch(this, function() {
+          this.hide();
+        })
+      });
+      domConstruct.place(btn.domNode, footer);
 
       this.set('content', base);
     },
@@ -90,27 +116,24 @@ define([
       this.inherited(arguments);
     },
 
+    // @Override
+    destroy: function() {
+      this.inherited(arguments);
+    },
+
+    // @Override
     onShow: function() {
       this.inherited(arguments);
 
-      request('/res/me', {
+      request('/res/users/me', {
         handleAs: 'json'
       }).then(lang.hitch(this, function(data) {
         this.user = data;
 
         domAttr.set(this.nameDom, 'innerHTML', this.user['name']);
         this.iconSelect.set('value', this.user['iconClass']);
-      }));
-    },
-      
-    onHide: function() {
-      this.inherited(arguments);
-      setTimeout(lang.hitch(this, this.destroyRecursive), 0);
-    },
-      
-    // @Override
-    destroy: function() {
-      this.inherited(arguments);
+        this.breakTime.set('interval', this.user['breakTime']);
+      }), templates.getRequestErrorHandler());
     }
   });
 });

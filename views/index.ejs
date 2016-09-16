@@ -28,9 +28,13 @@
        isDebug: true,
        async: true,
        packages: [{
-         name: "timeclock",
+         name: 'timeclock',
          location: location.pathname.replace(/\/[^/]*$/, '')
                  + '/org/kandj/timeclock'
+       }, {
+         name: 'dijitkj',
+         location: location.pathname.replace(/\/[^/]*$/, '')
+                 + '/org/kandj/dijitkj'
        }]
      };
     </script>
@@ -46,11 +50,14 @@
     <script>
      require([
        <% if (is_desktop) { %>
-       'timeclock/desktop'
+       'timeclock/desktop',
        <% } else { %>
-       'timeclock/mobile'
+       'timeclock/mobile',
        <% } %>
-     ]);
+       'dojo/domReady!'
+     ], function(main) {
+       main.startup();
+     });
     </script>
   </body>
 </html>

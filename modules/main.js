@@ -8,14 +8,7 @@ router.get('/false', function(req, res) {
   res.sendStatus(401);
 });
 
-// tbd. stub
-router.get('/me', function(req, res) {
-  res.send({
-    id: 'sample1',
-    name: 'Sample User',
-    iconClass: 'tcUserThiefIcon'
-  });
-});
+router.use('/users', require('users'));
 
 
 module.exports = router;

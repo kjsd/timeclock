@@ -5,10 +5,11 @@ define([
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
-  'timeclock/widgets/AboutMe',
+  'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
+  'timeclock/templates'
 ], function(declare, lang, request, Toolbar, ToolbarSeparator,
-            DropDownButton, AboutMe, UserMenu) {
+            DropDownButton, AboutMeDialog, UserMenu, templates) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: { id: '', name: '' },
@@ -35,7 +36,7 @@ define([
         iconClass: "tcInfoIcon",
         style: "float: right;",
         showLabel: false,
-        dropDown: new AboutMe({ style: 'display: none;' })
+        dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
     },
 
@@ -43,10 +44,10 @@ define([
     startup: function() {
       this.inherited(arguments);
 
-      request('/res/me', {
+      request('/res/users/me', {
         handleAs: 'json'
       }).then(lang.hitch(this, this.setUserInfo),
-              lang.hitch(this, this.clearUserInfo));
+              templates.getRequestErrorHandler());
     },
 
     // @Override
@@ -58,20 +59,9 @@ define([
 
     setUserInfo: function(data) {
       this.user = data;
-      this.user_btn.set('label',
-                        (this.user.name ?
-                         this.user.name: this.label_anonymous));
-      this.user_btn.set('iconClass',
-                        (this.user.iconClass ?
-                         this.user.iconClass: 'tcUserSilhouetteIcon'));
-      this.user_btn.set('disabled', false);
-    },
-
-    clearUserInfo: function() {
-        this.user = { id: '', name: '' };
-        this.user_btn.set('label', this.label_anonymous);
-        this.user_btn.set('iconClass', 'tcUserUnknownIcon');
-        this.user_btn.set('disabled', true);
+      this.user_btn.set('label', this.user['name']);
+      this.user_btn.set('iconClass', this.user['iconClass']);
+      this.user_btn.set('disabled', !this.user.hasOwnProperty('id'));
     }
   });
 });
