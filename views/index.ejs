@@ -25,16 +25,15 @@
      // object *before* we load dojo.js; they're functionally identical,
      // it's just easier to read this approach with a larger configuration.
      var dojoConfig = {
-       isDebug: true,
        async: true,
        packages: [{
          name: 'timeclock',
          location: location.pathname.replace(/\/[^/]*$/, '')
-                 + '/org/kandj/timeclock'
+                 + '/js/org/kandj/timeclock'
        }, {
          name: 'dijitkj',
          location: location.pathname.replace(/\/[^/]*$/, '')
-                 + '/org/kandj/dijitkj'
+                 + '/js/org/kandj/dijitkj'
        }]
      };
     </script>

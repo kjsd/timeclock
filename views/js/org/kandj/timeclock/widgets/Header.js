@@ -18,12 +18,15 @@ define([
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
+  'dijit/form/Button',
   'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
   'timeclock/templates'
 ], function(declare, lang, request, Toolbar, ToolbarSeparator,
-            DropDownButton, User, AboutMeDialog, UserMenu, templates) {
+            DropDownButton, Button, User, AboutMeDialog, UserMenu,
+            templates) {
+
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
@@ -61,6 +64,13 @@ define([
 
       this.addChild(this.userBtn);
       this.addChild(new ToolbarSeparator());
+
+      this.addChild(new Button({
+        label: 'Go home',
+        iconClass: 'tcHomeIcon',
+        showLabel: false
+      }));
+
       this.addChild(new DropDownButton({
         label: 'About TimeClock',
         iconClass: 'tcInfoIcon',
