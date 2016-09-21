@@ -26,14 +26,19 @@ define([
             DropDownButton, User, AboutMeDialog, UserMenu, templates) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
-    user: new User(),
+    user: null,
     userBtn: null,
 
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
-      var menu = new UserMenu({ style: 'display: none;' });
+      this.user = new User();
+
+      var menu = new UserMenu({
+        style: 'display: none;',
+        user: this.user
+      });
       var userOkHdl = lang.hitch(this, this.setUserInfo);
       declare.safeMixin(menu, {
         onDirty: function() {

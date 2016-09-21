@@ -27,7 +27,7 @@ define([
             Button, IntervalTextBox, AutoDestroyDialog, User, templates) {
   return declare(AutoDestroyDialog, {
     style: 'margin: 0; padding 0;',
-    user: new User(),
+    user: null,
     nameDom: null,
     breakTime: null,
     iconSelect: null,
@@ -151,15 +151,18 @@ define([
     onShow: function() {
       this.inherited(arguments);
 
-      request('/res/users/me', {
-        handleAs: 'json'
-      }).then(lang.hitch(this, function(data) {
-        lang.mixin(this.user, data);
+      if (this.user) {
+        this.setUserInfo();
+      } else {
+        this.user = new User();
 
-        domAttr.set(this.nameDom, 'innerHTML', this.user.name);
-        this.iconSelect.set('value', this.user.iconClass);
-        this.breakTime.set('interval', this.user.breakTime);
-      }), templates.getRequestErrorHandler());
+        request('/res/users/me', {
+          handleAs: 'json'
+        }).then(lang.hitch(this, function(data) {
+          lang.mixin(this.user, data);
+          this.setUserInfo();
+        }), templates.getRequestErrorHandler());
+      }
     },
 
     // @Override
@@ -171,6 +174,12 @@ define([
 
     onDirty: function() {
       // nop.
+    },
+
+    setUserInfo: function() {
+      domAttr.set(this.nameDom, 'innerHTML', this.user.name);
+      this.iconSelect.set('value', this.user.iconClass);
+      this.breakTime.set('interval', this.user.breakTime);
     }
   });
 });

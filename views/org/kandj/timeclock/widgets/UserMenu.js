@@ -21,6 +21,7 @@ define([
 ], function(lang, declare, DropDownMenu, MenuItem, MenuSeparator,
             AboutYouDialog) {
   return declare(DropDownMenu, {
+    user: null,
 
     // @Override
     postCreate: function() {
@@ -30,7 +31,7 @@ define([
         label: 'About you',
         iconClass: 'tcUserUnknownIcon',
         onClick: lang.hitch(this, function() {
-          var userDialog = new AboutYouDialog();
+          var userDialog = new AboutYouDialog({ user: this.user });
           var dirtyHdl = lang.hitch(this, this.onDirty);
           declare.safeMixin(userDialog, {
             onDirty: function() {
