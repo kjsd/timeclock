@@ -1,3 +1,16 @@
+/**
+ * @file mobile.js
+ *
+ * @version $Id:$
+ *
+ * @brief tbd.
+ *
+ * @author Kenji MINOURA / kenji@kandj.org
+ *
+ * Copyright (c) 2016 K&J Software Design, Corp. All rights reserved.
+ *
+ * @see <related_items>
+ ***********************************************************************/
 define([
   'dojox/mobile/ScrollableView',
   'dojox/mobile/Heading',

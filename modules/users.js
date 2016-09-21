@@ -1,3 +1,16 @@
+/**
+ * @file users.js
+ *
+ * @version $Id:$
+ *
+ * @brief
+ *
+ * @author Kenji MINOURA / kenji@kandj.org
+ *
+ * Copyright (c) 2016 K&J Software Design, Corp. All rights reserved.
+ *
+ * @see <related_items>
+ ***********************************************************************/
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');

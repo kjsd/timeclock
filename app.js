@@ -1,3 +1,16 @@
+/**
+ * @file app.js
+ *
+ * @version $Id:$
+ *
+ * @brief
+ *
+ * @author Kenji MINOURA / kenji@kandj.org
+ *
+ * Copyright (c) 2016 K&J Software Design, Corp. All rights reserved.
+ *
+ * @see <related_items>
+ ***********************************************************************/
 'use strict';
 
 require('app-module-path').addPath(__dirname + '/modules');
