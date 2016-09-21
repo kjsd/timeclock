@@ -57,6 +57,7 @@ define([
             },
             handleAs: 'json'
           }).then(lang.hitch(this, function(data) {
+            lang.mixin(this.user, data);
             this.dirty = true;
           }), templates.getRequestErrorHandler());
         }),
@@ -115,6 +116,7 @@ define([
             },
             handleAs: 'json'
           }).then(lang.hitch(this, function(data) {
+            lang.mixin(this.user, data);
             this.dirty = true;
           }), templates.getRequestErrorHandler());
         })
