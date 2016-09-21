@@ -8,13 +8,13 @@ define([
   'dijit/form/Button',
   'dijitkj/IntervalTextBox',
   'dijitkj/AutoDestroyDialog',
+  'timeclock/models/User',
   'timeclock/templates'
 ], function(declare, lang, request, domConstruct, domAttr, Select,
-            Button, IntervalTextBox, AutoDestroyDialog, templates) {
+            Button, IntervalTextBox, AutoDestroyDialog, User, templates) {
   return declare(AutoDestroyDialog, {
     style: 'margin: 0; padding 0;',
-
-    user: { id: '', name: '' },
+    user: new User(),
     nameDom: null,
     breakTime: null,
     iconSelect: null,
@@ -128,11 +128,11 @@ define([
       request('/res/users/me', {
         handleAs: 'json'
       }).then(lang.hitch(this, function(data) {
-        this.user = data;
+        lang.mixin(this.user, data);
 
-        domAttr.set(this.nameDom, 'innerHTML', this.user['name']);
-        this.iconSelect.set('value', this.user['iconClass']);
-        this.breakTime.set('interval', this.user['breakTime']);
+        domAttr.set(this.nameDom, 'innerHTML', this.user.name);
+        this.iconSelect.set('value', this.user.iconClass);
+        this.breakTime.set('interval', this.user.breakTime);
       }), templates.getRequestErrorHandler());
     }
   });

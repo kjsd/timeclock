@@ -5,25 +5,23 @@ define([
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
+  'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
   'timeclock/templates'
 ], function(declare, lang, request, Toolbar, ToolbarSeparator,
-            DropDownButton, AboutMeDialog, UserMenu, templates) {
+            DropDownButton, User, AboutMeDialog, UserMenu, templates) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
-    user: { id: '', name: '' },
+    user: new User(),
     user_btn: null,
-    label_anonymous: 'Anything else, noble sir?',
 
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
       this.user_btn = new DropDownButton({
-        label: this.label_anonymous,
-        style: "font-weight: bold;",
-        iconClass: "tcUserUnknownIcon",
+        style: 'font-weight: bold;',
         showLabel: true,
         dropDown: new UserMenu({ style: 'display: none;' }),
         disabled: true
@@ -32,9 +30,9 @@ define([
       this.addChild(this.user_btn);
       this.addChild(new ToolbarSeparator());
       this.addChild(new DropDownButton({
-        label: "About TimeClock",
-        iconClass: "tcInfoIcon",
-        style: "float: right;",
+        label: 'About TimeClock',
+        iconClass: 'tcInfoIcon',
+        style: 'float: right;',
         showLabel: false,
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
@@ -58,10 +56,10 @@ define([
     },
 
     setUserInfo: function(data) {
-      this.user = data;
-      this.user_btn.set('label', this.user['name']);
-      this.user_btn.set('iconClass', this.user['iconClass']);
-      this.user_btn.set('disabled', !this.user.hasOwnProperty('id'));
+      lang.mixin(this.user, data);
+      this.user_btn.set('label', this.user.name);
+      this.user_btn.set('iconClass', this.user.iconClass);
+      this.user_btn.set('disabled', !this.user.id);
     }
   });
 });
