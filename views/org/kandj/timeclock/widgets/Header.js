@@ -14,20 +14,34 @@ define([
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: new User(),
-    user_btn: null,
+    userBtn: null,
 
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
-      this.user_btn = new DropDownButton({
+      var menu = new UserMenu({ style: 'display: none;' });
+      var userOkHdl = lang.hitch(this, this.setUserInfo);
+      declare.safeMixin(menu, {
+        onDirty: function() {
+          this.inherited(arguments);
+
+          request('/res/users/me', {
+            handleAs: 'json'
+          }).then(userOkHdl, templates.getRequestErrorHandler());
+        }
+      });
+
+      this.userBtn = new DropDownButton({
         style: 'font-weight: bold;',
+        label: this.user.name,
+        iconClass: this.user.iconClass,
         showLabel: true,
-        dropDown: new UserMenu({ style: 'display: none;' }),
+        dropDown: menu,
         disabled: true
       });
 
-      this.addChild(this.user_btn);
+      this.addChild(this.userBtn);
       this.addChild(new ToolbarSeparator());
       this.addChild(new DropDownButton({
         label: 'About TimeClock',
@@ -50,16 +64,16 @@ define([
 
     // @Override
     destroy: function() {
-      this.user_btn = null;
+      this.userBtn = null;
 
       this.inherited(arguments);
     },
 
     setUserInfo: function(data) {
       lang.mixin(this.user, data);
-      this.user_btn.set('label', this.user.name);
-      this.user_btn.set('iconClass', this.user.iconClass);
-      this.user_btn.set('disabled', !this.user.id);
+      this.userBtn.set('label', this.user.name);
+      this.userBtn.set('iconClass', this.user.iconClass);
+      this.userBtn.set('disabled', !this.user.id);
     }
   });
 });

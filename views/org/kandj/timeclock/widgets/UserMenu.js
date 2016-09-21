@@ -1,10 +1,11 @@
 define([
+  'dojo/_base/lang',
   'dojo/_base/declare',
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
   'timeclock/widgets/AboutYouDialog'
-], function(declare, DropDownMenu, MenuItem, MenuSeparator,
+], function(lang, declare, DropDownMenu, MenuItem, MenuSeparator,
             AboutYouDialog) {
   return declare(DropDownMenu, {
 
@@ -15,10 +16,19 @@ define([
       this.addChild(new MenuItem({
         label: 'About you',
         iconClass: 'tcUserUnknownIcon',
-        onClick: function() {
-          new AboutYouDialog().show();
-        }
+        onClick: lang.hitch(this, function() {
+          var userDialog = new AboutYouDialog();
+          var dirtyHdl = lang.hitch(this, this.onDirty);
+          declare.safeMixin(userDialog, {
+            onDirty: function() {
+              this.inherited(arguments);
+              dirtyHdl();
+            }
+          });
+          userDialog.show();
+        })
       }));
+
       this.addChild(new MenuSeparator());
       this.addChild(new MenuItem({
         label: 'Logout and Deactivate (dropped all data!)',
@@ -38,6 +48,10 @@ define([
     // @Override
     destroy: function() {
       this.inherited(arguments);
+    },
+
+    onDirty: function() {
+      // nop.
     }
   });
 });

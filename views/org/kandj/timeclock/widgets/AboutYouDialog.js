@@ -18,6 +18,7 @@ define([
     nameDom: null,
     breakTime: null,
     iconSelect: null,
+    dirty: false,
 
     // @Override
     postCreate: function() {
@@ -35,10 +36,16 @@ define([
       this.iconSelect = new Select({
         sortByLabel: false,
         onChange: lang.hitch(this, function(v) {
-          if (this.iconSelect.get('value') == this.user.iconClass)
-            return;
+          if (v == this.user.iconClass) return;
 
-          console.log('tbd. put /res/users/me:iconClass');
+          request.put('/res/users/me', {
+            data: {
+              iconClass: v
+            },
+            handleAs: 'json'
+          }).then(lang.hitch(this, function(data) {
+            this.dirty = true;
+          }), templates.getRequestErrorHandler());
         }),
         options: [
           { value: 'tcUserIcon',
@@ -85,12 +92,18 @@ define([
       domConstruct.place('<td>A breaktime length of a day: </td>', tr);
 
       this.breakTime = new IntervalTextBox({
-        value: 'T01:00:00',
         onChange: lang.hitch(this, function(v) {
-          if (this.breakTime.get('interval') == this.user.breakTime)
-            return;
+          var newVal = this.breakTime.get('interval');
+          if (newVal == this.user.breakTime) return;
 
-          console.log('tbd. put /res/users/me');
+          request.put('/res/users/me', {
+            data: {
+              breakTime: newVal
+            },
+            handleAs: 'json'
+          }).then(lang.hitch(this, function(data) {
+            this.dirty = true;
+          }), templates.getRequestErrorHandler());
         })
       });
       domConstruct.place(this.breakTime.domNode,
@@ -134,6 +147,17 @@ define([
         this.iconSelect.set('value', this.user.iconClass);
         this.breakTime.set('interval', this.user.breakTime);
       }), templates.getRequestErrorHandler());
+    },
+
+    // @Override
+    onHide: function() {
+      this.inherited(arguments);
+
+      if (this.dirty) this.onDirty();
+    },
+
+    onDirty: function() {
+      // nop.
     }
   });
 });
