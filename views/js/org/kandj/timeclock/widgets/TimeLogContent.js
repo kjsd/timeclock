@@ -1,5 +1,5 @@
 /**
- * @file ClockContent.js
+ * @file TimeLogContent.js
  *
  * @version $Id:$
  *
@@ -18,13 +18,12 @@ define([
   'dijit/layout/BorderContainer'
 ], function(declare, lang, ContentPane, BorderContainer) {
   return declare(ContentPane, {
-    top_container: null,
     
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
-      this.set('content', 'aaa');
+      this.set('content', 'timeLog');
     },
 
     // @Override

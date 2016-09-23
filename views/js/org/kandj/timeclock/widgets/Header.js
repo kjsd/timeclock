@@ -14,23 +14,23 @@
 define([
   'dojo/_base/declare',
   'dojo/_base/lang',
+  'dojo/_base/array',
   'dojo/request',
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
-  'dijit/form/Button',
   'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
   'timeclock/templates'
-], function(declare, lang, request, Toolbar, ToolbarSeparator,
-            DropDownButton, Button, User, AboutMeDialog, UserMenu,
-            templates) {
+], function(declare, lang, array, request, Toolbar, ToolbarSeparator,
+            DropDownButton, User, AboutMeDialog, UserMenu, templates) {
 
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
     userBtn: null,
+    showBody: null,
 
     // @Override
     postCreate: function() {
@@ -65,12 +65,6 @@ define([
       this.addChild(this.userBtn);
       this.addChild(new ToolbarSeparator());
 
-      this.addChild(new Button({
-        label: 'Go home',
-        iconClass: 'tcHomeIcon',
-        showLabel: false
-      }));
-
       this.addChild(new DropDownButton({
         label: 'About TimeClock',
         iconClass: 'tcInfoIcon',
@@ -78,16 +72,16 @@ define([
         showLabel: false,
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
-    },
-
-    // @Override
-    startup: function() {
-      this.inherited(arguments);
 
       request('/res/users/me', {
         handleAs: 'json'
       }).then(lang.hitch(this, this.setUserInfo),
               templates.getRequestErrorHandler());
+    },
+
+    // @Override
+    startup: function() {
+      this.inherited(arguments);
     },
 
     // @Override

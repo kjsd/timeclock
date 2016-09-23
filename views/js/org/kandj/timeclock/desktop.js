@@ -12,19 +12,40 @@
  * @see <related_items>
  ***********************************************************************/
 define([
+  'dojo/_base/lang',
+  'dojo/_base/array',
   'dijit/layout/BorderContainer',
+  'dijit/layout/TabContainer',
   'timeclock/widgets/Header',
-], function(BorderContainer, Header) {
+  'timeclock/widgets/ClockContent',
+  'timeclock/widgets/TimeLogContent',
+], function(lang, array, BorderContainer, TabContainer, Header,
+            ClockContent, TimeLogContent) {
   return {
+    base: null,
+
     startup: function() {
-      var base = new BorderContainer({
+      this.base = new BorderContainer({
         style: 'width: 100%; height: 100%; margin: 0; padding: 0;'
       });
 
-      base.addChild(new Header({ region: 'top' }));
+      this.base.addChild(new Header({
+        region: 'top'
+      }));
 
-      base.placeAt(document.body);
-      base.startup();
+      var main = new TabContainer({
+        region: 'center'
+      });
+      main.addChild(new ClockContent({
+        title: '<span class="tcClockIcon"></span>TimeClock'
+      }));
+      main.addChild(new TimeLogContent({
+        title: '<span class="tcTableIcon"></span>TimeLog'
+      }));
+      this.base.addChild(main);
+
+      this.base.placeAt(document.body);
+      this.base.startup();
     }
   };
 });

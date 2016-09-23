@@ -19,13 +19,13 @@ var express = require('express');
 var app = express();
 var device = require('express-device');
 var bodyParser = require('body-parser');
-var compression = require('compression');
-var minify = require('express-minify');
+//var compression = require('compression');
+//var minify = require('express-minify');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-app.use(compression());
-app.use(minify());
+//app.use(compression());
+//app.use(minify());
 
 // views
 app.use(express.static(__dirname + '/views'));

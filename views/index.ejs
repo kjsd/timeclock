@@ -20,6 +20,10 @@
   </head>
 
   <body <% if (is_desktop) { %>class="soria"<% } %> >
+    <div id="loadingOverlay" class="loadingOverlay pageOverlay">
+	  <div class="loadingMessage">Loading...</div>
+    </div>
+
     <script>
      // Instead of using data-dojo-config, we're creating a dojoConfig
      // object *before* we load dojo.js; they're functionally identical,
@@ -53,9 +57,20 @@
        <% } else { %>
        'timeclock/mobile',
        <% } %>
+       'dojo/dom-style',
+       'dojo/_base/fx',
+       'dojo/dom',
        'dojo/domReady!'
-     ], function(main) {
+     ], function(main, domStyle, fx, dom) {
        main.startup();
+
+	   // fade the overlay gracefully
+	   fx.fadeOut({
+		 node: dom.byId('loadingOverlay'),
+		 onEnd: function(node){
+		   domStyle.set(node, 'display', 'none');
+		 }
+	   }).play();
      });
     </script>
   </body>

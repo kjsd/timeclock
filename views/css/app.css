@@ -5,6 +5,25 @@ html, body {
    padding: 0;
 }
 
+.pageOverlay {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1001;
+    display: block;
+}
+
+#loadingOverlay {
+    background:  #fff url('//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/images/loadingAnimation.gif') no-repeat 10px 23px;
+}
+
+.loadingMessage {
+    padding: 25px 40px;
+    color: #999;
+}
+
 /* Override soria.css */
 .soria .dijitDialogPaneActionBar {
   
@@ -46,6 +65,8 @@ html, body {
    background-image: url("../images/user-silhouette.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -55,6 +76,8 @@ html, body {
    background-image: url("../images/users.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -64,6 +87,8 @@ html, body {
    background-image: url("../images/user-silhouette-question.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -73,6 +98,8 @@ html, body {
    background-image: url("../images/user.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -82,6 +109,8 @@ html, body {
    background-image: url("../images/user-black.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -91,6 +120,8 @@ html, body {
    background-image: url("../images/user-black-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -100,6 +131,8 @@ html, body {
    background-image: url("../images/user-business.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -109,6 +142,8 @@ html, body {
    background-image: url("../images/user-business-boss.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -118,6 +153,8 @@ html, body {
    background-image: url("../images/user-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -127,6 +164,8 @@ html, body {
    background-image: url("../images/user-green.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -136,6 +175,8 @@ html, body {
    background-image: url("../images/user-green-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -145,6 +186,8 @@ html, body {
    background-image: url("../images/user-nude.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -154,6 +197,8 @@ html, body {
    background-image: url("../images/user-nude-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -163,6 +208,8 @@ html, body {
    background-image: url("../images/user-orange.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -172,6 +219,8 @@ html, body {
    background-image: url("../images/user-orange-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -181,6 +230,8 @@ html, body {
    background-image: url("../images/user-thief.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -190,6 +241,8 @@ html, body {
    background-image: url("../images/user-thief-baldie.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -199,6 +252,8 @@ html, body {
    background-image: url("../images/user-white.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -208,6 +263,8 @@ html, body {
    background-image: url("../images/user-white-female.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -217,6 +274,8 @@ html, body {
    background-image: url("../images/information-frame.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -226,6 +285,8 @@ html, body {
    background-image: url("../images/tick.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -235,6 +296,19 @@ html, body {
    background-image: url("../images/eraser--arrow.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
+   width: 16px;
+   height: 16px;
+}
+
+.tcTableIcon
+{
+   background-image: url("../images/table.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -244,6 +318,8 @@ html, body {
    background-image: url("../images/table-insert-row.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -253,6 +329,8 @@ html, body {
    background-image: url("../images/table-delete-row.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -262,6 +340,8 @@ html, body {
    background-image: url("../images/exclamation.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -271,6 +351,8 @@ html, body {
    background-image: url("../images/document-pdf.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -280,6 +362,8 @@ html, body {
    background-image: url("../images/document-excel-csv.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -289,6 +373,8 @@ html, body {
    background-image: url("../images/key--pencil.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -298,6 +384,8 @@ html, body {
    background-image: url("../images/disk.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -307,6 +395,8 @@ html, body {
    background-image: url("../images/table-import.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -316,6 +406,8 @@ html, body {
    background-image: url("../images/thumb.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
@@ -325,15 +417,19 @@ html, body {
    background-image: url("../images/control-power.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
 
-.tcHomeIcon
+.tcClockIcon
 {
-   background-image: url("../images/home.png");
+   background-image: url("../images/clock.png");
    background-repeat: no-repeat;
    background-position: center;
+   display: inline-block;
+   vertical-align: middle;
    width: 16px;
    height: 16px;
 }
