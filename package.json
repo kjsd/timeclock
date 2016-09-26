@@ -21,6 +21,6 @@
     "express-device": "^0.4.2",
     "express-minify": "^0.2.0",
     "passport": "^0.3.2",
-    "passport-google-oauth": "^1.0.0"
+    "passport-google-oauth2": "^0.1.6"
   }
 }

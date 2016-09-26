@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+     var dojoConfig = {
+       async: true
+     };
+    </script>
+    <script
+        src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js">
+    </script>
+    <script>
+     require([
+       'dojox/storage',
+       'dojo/ready'
+     ], function(storage, ready) {
+       var token = '<%= token %>';
+
+       ready(function() {
+         var storageProvider = dojox.storage.manager.getProvider();
+         storageProvider.initialize();
+         storageProvider.put("accessToken", token, function(status, keyName) {
+           window.location.href = '/';
+         });
+       });
+     });
+    </script>
+  </body>
+</html>

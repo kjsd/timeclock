@@ -22,7 +22,8 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 var minify = require('express-minify');
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var User = require('models/User');
 
 app.use(compression());
 app.use(minify());
@@ -47,32 +48,49 @@ app.get('/', function(req, res) {
 
 // controllers
 // tbd. 
-app.use('/res', require('main'));
+app.use('/res', require('controllers/main'));
 
-/* tbd.
+
 // control APIs are protected with Google OAuth2
+if (process.env.NODE_ENV != 'production') {
+  process.env.BASE_URL = 'http://localhost:3000';
+  process.env.GOOGLE_CLIENT_ID =
+    '297000402789-nubthf0guot6kfa1696qq7i82mi5494g.apps.googleusercontent.com';
+  process.env.GOOGLE_CLIENT_SECRET = 'LQqYLbHbCDN-sxuyqYzRz3_J';
+}
+
 passport.use(
   new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.BASE_URL + '/auth/google/callback'
+    callbackURL: process.env.BASE_URL + '/token/callback'
   }, function(accessToken, refreshToken, profile, done) {
-    // tbd.
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    // return done(err, user);
-    // });
+    process.nextTick(function() {
+      User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        if (err) return done(err);
+
+        user.name = profile.displayName;
+        user.googleAccessToken = accessToken;
+        user.save();
+        return done(null, accessToken);
+      });
+    });
   }));
 
-app.use('/res/*',
+app.get('/token',
         passport.authenticate(
-          'google',
-          { scope: ['https://www.googleapis.com/auth/plus.login'] }
-        ), require('main'));
+          'google', {
+            session: false,
+            scope: ['https://www.googleapis.com/auth/plus.login']
+          }
+        ));
 
-app.get('/auth/google/callback',
-        passport.authenticate('google', { successRedirect: '/',
-                                          failureRedirect: '/login' }));
-*/
+app.get('/token/callback', function (req, res, next) {
+  passport.authenticate('google', function (err, accessToken) {
+    console.log(accessToken);
+    res.render('token.ejs', { token: accessToken });
+  })(req, res, next);
+});
 
 var server = app.listen(process.env.PORT || '3000', function () {
   console.log('App listening on port %s', server.address().port);
