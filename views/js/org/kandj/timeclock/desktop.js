@@ -14,12 +14,13 @@
 define([
   'dojo/_base/lang',
   'dojo/_base/array',
+  'dojox/storage',
   'dijit/layout/BorderContainer',
   'dijit/layout/TabContainer',
   'timeclock/widgets/Header',
   'timeclock/widgets/ClockContent',
   'timeclock/widgets/TimeLogContent',
-], function(lang, array, BorderContainer, TabContainer, Header,
+], function(lang, array, storage, BorderContainer, TabContainer, Header,
             ClockContent, TimeLogContent) {
   return {
     base: null,

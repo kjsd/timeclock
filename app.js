@@ -23,12 +23,21 @@ var compression = require('compression');
 var minify = require('express-minify');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var BearerStrategy = require('passport-http-bearer').Strategy;
 var User = require('models/User');
 
-app.use(compression());
-app.use(minify());
 
-// views
+if (process.env.NODE_ENV != 'production') {
+  process.env.BASE_URL = 'http://localhost:3000';
+  process.env.GOOGLE_CLIENT_ID =
+    '297000402789-nubthf0guot6kfa1696qq7i82mi5494g.apps.googleusercontent.com';
+  process.env.GOOGLE_CLIENT_SECRET = 'LQqYLbHbCDN-sxuyqYzRz3_J';
+} else {
+  app.use(compression());
+  app.use(minify());
+}
+
+// Views
 app.use(express.static(__dirname + '/views'));
 
 app.set('view engine', 'ejs');
@@ -46,51 +55,52 @@ app.get('/', function(req, res) {
   res.render('index.ejs');
 });
 
-// controllers
-// tbd. 
-app.use('/res', require('controllers/main'));
+// Authentication controllers
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.BASE_URL + '/token/callback'
+}, function(accessToken, refreshToken, profile, done) {
+  process.nextTick(function() {
+    User.findOrCreate({ id: profile.id }, function (err, user) {
+      if (err) return done(err);
 
-
-// control APIs are protected with Google OAuth2
-if (process.env.NODE_ENV != 'production') {
-  process.env.BASE_URL = 'http://localhost:3000';
-  process.env.GOOGLE_CLIENT_ID =
-    '297000402789-nubthf0guot6kfa1696qq7i82mi5494g.apps.googleusercontent.com';
-  process.env.GOOGLE_CLIENT_SECRET = 'LQqYLbHbCDN-sxuyqYzRz3_J';
-}
-
-passport.use(
-  new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.BASE_URL + '/token/callback'
-  }, function(accessToken, refreshToken, profile, done) {
-    process.nextTick(function() {
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        if (err) return done(err);
-
-        user.name = profile.displayName;
-        user.googleAccessToken = accessToken;
-        user.save();
-        return done(null, accessToken);
-      });
+      user.name = profile.displayName;
+      user.accessToken = accessToken;
+      user.refreshToken = refreshToken;
+      user.save();
+      
+      return done(null, user);
     });
-  }));
+  });
+}));
 
-app.get('/token',
-        passport.authenticate(
-          'google', {
-            session: false,
-            scope: ['https://www.googleapis.com/auth/plus.login']
-          }
-        ));
+app.get('/token', passport.authenticate('google', {
+  session: false,
+  scope: ['https://www.googleapis.com/auth/plus.login'],
+  accessType: 'offline',
+  approvalPrompt: 'force'
+}));
 
-app.get('/token/callback', function (req, res, next) {
-  passport.authenticate('google', function (err, accessToken) {
-    console.log(accessToken);
-    res.render('token.ejs', { token: accessToken });
-  })(req, res, next);
+app.get('/token/callback', passport.authenticate('google', {
+  session: false,
+  failureRedirect: "/"
+}), function(req, res) {
+  res.render('token.ejs', { token: req.user.accessToken });
 });
+
+// Resource controllers and Token Authentication
+passport.use(new BearerStrategy(function(token, done) {
+  User.findOne({ accessToken: token }, function(err, user) {
+    if (err)  return done(err);
+
+    return done(null, user, { scope: 'all' });
+  });
+}));
+
+app.use('/res', passport.authenticate('bearer', { session: false }),
+        require('controllers/main'));
+
 
 var server = app.listen(process.env.PORT || '3000', function () {
   console.log('App listening on port %s', server.address().port);

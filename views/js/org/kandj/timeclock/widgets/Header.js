@@ -15,17 +15,17 @@ define([
   'dojo/_base/declare',
   'dojo/_base/lang',
   'dojo/_base/array',
-  'dojo/request',
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
   'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
+  'timeclock/request',
   'timeclock/templates'
-], function(declare, lang, array, request, Toolbar, ToolbarSeparator,
-            DropDownButton, User, AboutMeDialog, UserMenu, templates) {
-
+], function(declare, lang, array, Toolbar, ToolbarSeparator,
+            DropDownButton, User, AboutMeDialog, UserMenu, request,
+            templates) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,

@@ -14,35 +14,48 @@
 // stub
 
 var u_ = {
-  googleId: '',
-  googleAccessToken: '',
+  id: '',
+  accessToken: '',
+  refreshToken: '',
   name: '',
   breakTime: 0,
-  iconClass: ''
+  iconClass: '',
+  lastUpdated: ''
 };
 
 function User(args) {
-  this.googleId = args.googleId;
-  this.googleAccessToken = args.googleAccessToken;
-  this.name = args.name;
-  this.breakTime = args.breakTime;
-  this.iconClass = args.iconClass;
+  var me = this;
+  Object.keys(u_).forEach(function(k) {
+    me[k] = args[k];
+  });
 };
 
 User.prototype.save = function() {
-  u_.googleId = this.googleId;
-  u_.googleAccessToken = this.googleAccessToken;
-  u_.name = this.name;
-  u_.breakTime = this.breakTime;
-  u_.iconClass = this.iconClass; 
+  var me = this;
+  Object.keys(u_).forEach(function(k) {
+    u_[k] = me[k];
+  });
+  u_.lastUpdated = new Date();
 };
 
-User.findOrCreate = function(keys, hdl) {
-  if (keys.googleId == u_.googleId) {
+User.findOrCreate = function(args, hdl) {
+  if (args.id == u_.id) {
     hdl(false, new User(u_));
   } else {
-    hdl(false, new User(keys));
+    hdl(false, new User(args));
   }
+};
+
+User.findOne = function(args, hdl) {
+  var err = false;
+  Object.keys(args).forEach(function(k) {
+    if (args[k] != u_[k]) {
+      err = true;
+    }
+  });
+
+  if (err) hdl(null, false);
+  else hdl(false, new User(u_));
 };
 
 module.exports = User;

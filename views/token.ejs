@@ -19,7 +19,7 @@
        ready(function() {
          var storageProvider = dojox.storage.manager.getProvider();
          storageProvider.initialize();
-         storageProvider.put("accessToken", token, function(status, keyName) {
+         storageProvider.put("token", token, function(status, keyName) {
            window.location.href = '/';
          });
        });

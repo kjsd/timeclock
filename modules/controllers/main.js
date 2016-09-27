@@ -15,11 +15,9 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/true', function(req, res) {
-  console.log(req.params.user);
   res.sendStatus(200);
 });
 router.get('/false', function(req, res) {
-  console.log(req);
   res.sendStatus(400);
 });
 router.get('/now', function(req, res) {

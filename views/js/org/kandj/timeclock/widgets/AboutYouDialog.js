@@ -14,7 +14,6 @@
 define([
   'dojo/_base/declare',
   'dojo/_base/lang',
-  'dojo/request',
   'dojo/dom-construct',
   'dojo/dom-attr',
   'dijit/form/Select',
@@ -22,9 +21,11 @@ define([
   'dijitkj/IntervalTextBox',
   'dijitkj/AutoDestroyDialog',
   'timeclock/models/User',
+  'timeclock/request',
   'timeclock/templates'
-], function(declare, lang, request, domConstruct, domAttr, Select,
-            Button, IntervalTextBox, AutoDestroyDialog, User, templates) {
+], function(declare, lang, domConstruct, domAttr, Select, Button,
+            IntervalTextBox, AutoDestroyDialog, User, request, templates) {
+
   return declare(AutoDestroyDialog, {
     style: 'margin: 0; padding 0;',
     user: null,

@@ -60,17 +60,9 @@
        'dojo/dom-style',
        'dojo/_base/fx',
        'dojo/dom',
-       'dojox/storage',
-       'dojo/ready',
        'dojo/domReady!'
-     ], function(main, domStyle, fx, dom, storage, ready) {
+     ], function(main, domStyle, fx, dom) {
        main.startup();
-
-       ready(function() {
-         var storageProvider = dojox.storage.manager.getProvider();
-         storageProvider.initialize();
-         console.log(storageProvider.get("accessToken"));
-       });
 
 	   // fade the overlay gracefully
 	   fx.fadeOut({
