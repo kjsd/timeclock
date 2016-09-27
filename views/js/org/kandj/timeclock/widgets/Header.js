@@ -47,9 +47,7 @@ define([
         onDirty: function() {
           this.inherited(arguments);
 
-          request('/res/users/me', {
-            handleAs: 'json'
-          }).then(userOkHdl, templates.getRequestErrorHandler());
+          request('/res/me').then(userOkHdl, request.errback);
         }
       });
 
@@ -73,10 +71,8 @@ define([
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
 
-      request('/res/users/me', {
-        handleAs: 'json'
-      }).then(lang.hitch(this, this.setUserInfo),
-              templates.getRequestErrorHandler());
+      request('/res/me').then(lang.hitch(this, this.setUserInfo),
+                              request.errback);
     },
 
     // @Override
@@ -95,7 +91,7 @@ define([
       lang.mixin(this.user, data);
       this.userBtn.set('label', this.user.name);
       this.userBtn.set('iconClass', this.user.iconClass);
-      this.userBtn.set('disabled', !this.user.id);
+      this.userBtn.set('disabled', false);
     }
   });
 });

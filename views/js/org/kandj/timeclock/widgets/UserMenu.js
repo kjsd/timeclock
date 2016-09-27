@@ -17,9 +17,10 @@ define([
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
+  'timeclock/request',
   'timeclock/widgets/AboutYouDialog'
 ], function(lang, declare, DropDownMenu, MenuItem, MenuSeparator,
-            AboutYouDialog) {
+            request, AboutYouDialog) {
   return declare(DropDownMenu, {
     user: null,
 
@@ -46,11 +47,20 @@ define([
       this.addChild(new MenuSeparator());
       this.addChild(new MenuItem({
         label: 'Logout and Deactivate (dropped all data!)',
-        iconClass: 'tcThumbIcon'
+        iconClass: 'tcThumbIcon',
+        onClick: function() {
+          // tbd. confirm
+          request.delete('/res/me').then(null, request.errback);
+        }
       }));
       this.addChild(new MenuItem({
         label: 'Logout',
-        iconClass: 'tcControlPowerIcon'
+        iconClass: 'tcControlPowerIcon',
+        onClick: function() {
+          request.put('/res/me/logout').then(function(data) {
+            window.location.href = '/empty';
+          }, request.errback);
+        }
       }));
     },
 

@@ -1,5 +1,5 @@
 /**
- * @file users.js
+ * @file me.js
  *
  * @version $Id:$
  *
@@ -21,11 +21,18 @@ router.use(bodyParser.urlencoded({
   extended: true
 }));
 
-router.get('/me', function(req, res) {
-  res.json(req.user);
+var strip = function(user) {
+  delete user.id;
+  delete user.accessToken;
+  delete user.refreshToken;
+  return user;
+};
+
+router.get('/', function(req, res) {
+  res.json(strip(req.user));
 });
 
-router.put('/me', function(req, res) {
+router.put('/', function(req, res) {
   Object.keys(req.user).forEach(function(k) {
     if (k == 'id') return;
     if (!req.body.hasOwnProperty(k)) return;
@@ -33,11 +40,20 @@ router.put('/me', function(req, res) {
     req.user[k] = req.body[k];
   });
   req.user.save();
-  res.json(req.user);
+  res.json(strip(req.user));
 });
 
-router.delete('/me', function(req, res) {
+router.delete('/', function(req, res) {
+  // tbd.
   res.sendStatus(403);
 });
+
+router.put('/logout', function(req, res) {
+  req.user.accessToken = '';
+  req.user.refreshToken = '';
+  req.user.save();
+  res.json(strip(req.user));
+});
+
 
 module.exports = router;

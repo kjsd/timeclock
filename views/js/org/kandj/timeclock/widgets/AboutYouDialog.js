@@ -49,19 +49,6 @@ define([
 
       this.iconSelect = new Select({
         sortByLabel: false,
-        onChange: lang.hitch(this, function(v) {
-          if (v == this.user.iconClass) return;
-
-          request.put('/res/users/me', {
-            data: {
-              iconClass: v
-            },
-            handleAs: 'json'
-          }).then(lang.hitch(this, function(data) {
-            lang.mixin(this.user, data);
-            this.dirty = true;
-          }), templates.getRequestErrorHandler());
-        }),
         options: [
           { value: 'tcUserIcon',
             label: '<div class="tcUserIcon" />' },
@@ -93,7 +80,19 @@ define([
             label: '<div class="tcUserWhiteIcon" />' },
           { value: 'tcUserWhiteFemaleIcon',
             label: '<div class="tcUserWhiteFemaleIcon" />' },
-        ]
+        ],
+        onChange: lang.hitch(this, function(v) {
+          if (v == this.user.iconClass) return;
+
+          request.put('/res/me', {
+            data: {
+              iconClass: v
+            }
+          }).then(lang.hitch(this, function(data) {
+            lang.mixin(this.user, data);
+            this.dirty = true;
+          }), request.errback);
+        })
       });
       domConstruct.place(this.iconSelect.domNode, namepara);
 
@@ -111,15 +110,14 @@ define([
           var newVal = this.breakTime.get('interval');
           if (newVal == this.user.breakTime) return;
 
-          request.put('/res/users/me', {
+          request.put('/res/me', {
             data: {
               breakTime: newVal
-            },
-            handleAs: 'json'
+            }
           }).then(lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
             this.dirty = true;
-          }), templates.getRequestErrorHandler());
+          }), request.errback);
         })
       });
       domConstruct.place(this.breakTime.domNode,
@@ -132,6 +130,18 @@ define([
       var btn = new Button({
         label: 'OK',
         onClick: lang.hitch(this, function() {
+          if (!this.dirty) {
+            this.user.iconClass = this.iconSelect.get('value');
+            this.user.breakTime = this.breakTime.get('interval');
+
+            request.put('/res/me', {
+              data: this.user
+            }).then(lang.hitch(this, function(data) {
+              lang.mixin(this.user, data);
+              this.dirty = true;
+            }), request.errback);
+          }
+
           this.hide();
         })
       });
@@ -159,12 +169,10 @@ define([
       } else {
         this.user = new User();
 
-        request('/res/users/me', {
-          handleAs: 'json'
-        }).then(lang.hitch(this, function(data) {
+        request('/res/me').then(lang.hitch(this, function(data) {
           lang.mixin(this.user, data);
           this.setUserInfo();
-        }), templates.getRequestErrorHandler());
+        }), request.errback);
       }
     },
 

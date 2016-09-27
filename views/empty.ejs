@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TimeClock</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <div id="loadingOverlay" style="opacity: 0;">
+	  Thank you for your access.
+    </div>
+    <div id="link" style="display: none;">
+      <a href="/">Try again</a> or 
+      <a href="http://www.google.com">http://www.google.com</a>
+    </div>
+
+    <script>
+     var dojoConfig = {
+       async: true
+     };
+    </script>
+    <script
+        src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js">
+    </script>
+    <script>
+     require([
+       'dojo/dom-style',
+       'dojo/_base/fx',
+       'dojo/dom',
+       'dojo/domReady!'
+     ], function( domStyle, fx, dom) {
+       fx.fadeIn({
+         node: 'loadingOverlay',
+         onEnd: function(node) {
+           setTimeout(function() {
+             fx.fadeOut({
+	           node: node,
+	           onEnd: function(node){
+	             domStyle.set(node, 'display', 'none');
+	             domStyle.set(dom.byId('link'), 'display', 'block');
+	           }
+	         }).play();
+           }, 1000);
+         }
+       }).play();
+     });
+    </script>
+  </body>
+</html>

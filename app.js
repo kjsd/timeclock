@@ -27,14 +27,14 @@ var BearerStrategy = require('passport-http-bearer').Strategy;
 var User = require('models/User');
 
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV == 'production') {
+  app.use(compression());
+  app.use(minify());
+} else {
   process.env.BASE_URL = 'http://localhost:3000';
   process.env.GOOGLE_CLIENT_ID =
     '297000402789-nubthf0guot6kfa1696qq7i82mi5494g.apps.googleusercontent.com';
   process.env.GOOGLE_CLIENT_SECRET = 'LQqYLbHbCDN-sxuyqYzRz3_J';
-} else {
-  app.use(compression());
-  app.use(minify());
 }
 
 // Views
@@ -53,6 +53,9 @@ device.enableDeviceHelpers(app);
 
 app.get('/', function(req, res) {
   res.render('index.ejs');
+});
+app.get('/empty', function(req, res) {
+  res.render('empty.ejs');
 });
 
 // Authentication controllers
@@ -84,7 +87,7 @@ app.get('/token', passport.authenticate('google', {
 
 app.get('/token/callback', passport.authenticate('google', {
   session: false,
-  failureRedirect: "/"
+  failureRedirect: "/empty"
 }), function(req, res) {
   res.render('token.ejs', { token: req.user.accessToken });
 });

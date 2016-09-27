@@ -14,25 +14,34 @@
 // stub
 
 var u_ = {
+};
+
+var scheme_ = {
   id: '',
   accessToken: '',
   refreshToken: '',
   name: '',
   breakTime: 0,
-  iconClass: '',
+  iconClass: 'tcUserSilhouetteIcon',
   lastUpdated: ''
 };
 
 function User(args) {
   var me = this;
-  Object.keys(u_).forEach(function(k) {
-    me[k] = args[k];
+  Object.keys(scheme_).forEach(function(k) {
+    if (!args.hasOwnProperty(k)) {
+      me[k] = scheme_[k];
+    } else {
+      me[k] = args[k];
+    }
   });
 };
 
 User.prototype.save = function() {
   var me = this;
-  Object.keys(u_).forEach(function(k) {
+  Object.keys(scheme_).forEach(function(k) {
+    if (!me.hasOwnProperty(k)) return;
+
     u_[k] = me[k];
   });
   u_.lastUpdated = new Date();
