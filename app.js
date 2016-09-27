@@ -106,7 +106,7 @@ passport.use(new BearerStrategy(function(token, done) {
     var la = Date.parse(user.lastAccess);
     var lu = Date.parse(user.lastTokenUpdate);
     if ((now.getTime() - la > 600000) || (now.getTime() - lu > 864000000)) {
-      // 10 min no access or 10 days no update
+      // return 401 when 10 min no access or 10 days no update
       return done(null, false);
     }
 
