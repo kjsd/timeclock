@@ -21,9 +21,10 @@ var scheme_ = {
   accessToken: '',
   refreshToken: '',
   name: '',
-  breakTime: 0,
+  breakTime: 3600,
   iconClass: 'tcUserSilhouetteIcon',
-  lastUpdated: ''
+  lastAccess: '',
+  lastTokenUpdate: ''
 };
 
 function User(args) {
@@ -44,7 +45,6 @@ User.prototype.save = function() {
 
     u_[k] = me[k];
   });
-  u_.lastUpdated = new Date();
 };
 
 User.findOrCreate = function(args, hdl) {
@@ -63,7 +63,7 @@ User.findOne = function(args, hdl) {
     }
   });
 
-  if (err) hdl(null, false);
+  if (err) hdl(false, null);
   else hdl(false, new User(u_));
 };
 

@@ -17,6 +17,7 @@ require('app-module-path').addPath(__dirname + '/modules');
 
 var express = require('express');
 var app = express();
+var request = require('request');
 var device = require('express-device');
 var bodyParser = require('body-parser');
 var compression = require('compression');
@@ -68,9 +69,12 @@ passport.use(new GoogleStrategy({
     User.findOrCreate({ id: profile.id }, function (err, user) {
       if (err) return done(err);
 
+      var now = new Date();
       user.name = profile.displayName;
       user.accessToken = accessToken;
       user.refreshToken = refreshToken;
+      user.lastTokenUpdate = now.toISOString();
+      user.lastAccess = now.toISOString();
       user.save();
       
       return done(null, user);
@@ -96,13 +100,26 @@ app.get('/token/callback', passport.authenticate('google', {
 passport.use(new BearerStrategy(function(token, done) {
   User.findOne({ accessToken: token }, function(err, user) {
     if (err)  return done(err);
+    if (!user) { return done(null, false); }
+
+    var now = new Date();
+    var la = Date.parse(user.lastAccess);
+    var lu = Date.parse(user.lastTokenUpdate);
+    if ((now.getTime() - la > 600000) || (now.getTime() - lu > 864000000)) {
+      // 10 min no access or 10 days no update
+      return done(null, false);
+    }
+
+    user.lastAccess = now.toISOString();
+    user.save();
 
     return done(null, user, { scope: 'all' });
   });
 }));
 
-app.use('/res', passport.authenticate('bearer', { session: false }),
-        require('controllers/main'));
+app.use('/res', passport.authenticate('bearer', {
+  session: false
+}), require('controllers/main'));
 
 
 var server = app.listen(process.env.PORT || '3000', function () {
