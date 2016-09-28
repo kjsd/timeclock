@@ -17,11 +17,8 @@ require('app-module-path').addPath(__dirname + '/modules');
 
 var express = require('express');
 var app = express();
-var request = require('request');
 var device = require('express-device');
 var bodyParser = require('body-parser');
-var compression = require('compression');
-var minify = require('express-minify');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
@@ -29,8 +26,8 @@ var User = require('models/User');
 
 
 if (process.env.NODE_ENV == 'production') {
-  app.use(compression());
-  app.use(minify());
+  app.use(require('compression')());
+  app.use(require('express-minify')());
 } else {
   process.env.BASE_URL = 'http://localhost:3000';
   process.env.GOOGLE_CLIENT_ID =

@@ -22,7 +22,6 @@
     "express-minify": "^0.2.0",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
-    "passport-http-bearer": "^1.0.1",
-    "request": "^2.75.0"
+    "passport-http-bearer": "^1.0.1"
   }
 }

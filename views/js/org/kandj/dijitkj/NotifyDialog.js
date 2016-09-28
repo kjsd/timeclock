@@ -21,19 +21,42 @@ define([
 ], function(declare, lang, domConstruct, domAttr, Button,
             AutoDestroyDialog) {
   return declare(AutoDestroyDialog, {
-    style: 'margin: 0; padding 0;',
-    mainDom: null,
-
     // @Override
     postCreate: function() {
       this.inherited(arguments);
 
       this.set('closable', false);
+    },
 
+    // @Override
+    _setContentAttr: function(cont) {
+      // arguments are overwrited
+      cont = this.createContent(cont);
+
+      this.inherited(arguments);
+    },
+
+    // @Override
+    startup: function() {
+      this.inherited(arguments);
+    },
+
+    // @Override
+    destroy: function() {
+      this.inherited(arguments);
+    },
+
+    createContent: function(cont) {
       var base = domConstruct.create('div');
-      this.mainDom = domConstruct.create('div', {
+      var main = domConstruct.create('div', {
         class: 'dijitDialogPaneContentArea'
       }, base);
+
+      if (typeof(cont) == "object") {
+        domConstruct.place(cont, main);
+      } else {
+        domAttr.set(main, 'innerHTML', cont);
+      }
 
       var footer = domConstruct.create('div', {
         class: 'dijitDialogPaneActionBar'
@@ -47,23 +70,7 @@ define([
       });
       domConstruct.place(btn.domNode, footer);
 
-      this.set('content', base);
-    },
-
-    // @Override
-    _setContentAttr: function(cont) {
-      domConstruct.place(cont, this.mainDom);
-      this.inherited(arguments);
-    },
-
-    // @Override
-    startup: function() {
-      this.inherited(arguments);
-    },
-
-    // @Override
-    destroy: function() {
-      this.inherited(arguments);
+      return base;
     }
   });
 });
