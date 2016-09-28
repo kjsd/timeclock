@@ -441,3 +441,14 @@ html, body {
    width: 16px;
    height: 16px;
 }
+
+.tcHomeIcon
+{
+   background-image: url("../images/home.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   display: inline-block;
+   vertical-align: middle;
+   width: 16px;
+   height: 16px;
+}

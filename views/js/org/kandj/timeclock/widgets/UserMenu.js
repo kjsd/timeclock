@@ -35,8 +35,8 @@ define([
         onClick: lang.hitch(this, function() {
           var userDialog = new AboutYouDialog({ user: this.user });
           userDialog.on('dirty', lang.hitch(this, function(data) {
-            this.user = data;
-            this.emit('dirty', data);
+            this.user = userDialog.get('user');
+            this.emit('dirty', {});
           }));
 
           userDialog.show();
@@ -70,6 +70,8 @@ define([
 
     // @Override
     destroy: function() {
+      this.user = null;
+
       this.inherited(arguments);
     }
   });

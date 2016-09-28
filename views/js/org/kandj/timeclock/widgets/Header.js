@@ -17,17 +17,17 @@ define([
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
+  'dijit/form/Button',
   'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
   'timeclock/request'
-], function(declare, lang, Toolbar, ToolbarSeparator,
-            DropDownButton, User, AboutMeDialog, UserMenu, request) {
+], function(declare, lang, Toolbar, ToolbarSeparator, DropDownButton,
+            Button, User, AboutMeDialog, UserMenu, request) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
     userBtn: null,
-    showBody: null,
 
     // @Override
     postCreate: function() {
@@ -39,7 +39,9 @@ define([
         style: 'display: none;',
         user: this.user
       });
-      menu.on('dirty', lang.hitch(this, this.setUserInfo));
+      menu.on('dirty', lang.hitch(this, function() {
+        this.setUserInfo(menu.get('user'));
+      }));
 
       this.userBtn = new DropDownButton({
         style: 'font-weight: bold;',
@@ -52,6 +54,23 @@ define([
 
       this.addChild(this.userBtn);
       this.addChild(new ToolbarSeparator());
+
+      this.addChild(new Button({
+        label: 'Home',
+        iconClass: 'tcHomeIcon',
+        showLabel: true,
+        onClick: lang.hitch(this, function() {
+          this.emit('requestclockcontent', {});
+        })
+      }));
+      this.addChild(new Button({
+        label: 'TimeLog',
+        iconClass: 'tcTableIcon',
+        showLabel: true,
+        onClick: lang.hitch(this, function() {
+          this.emit('requesttimelogcontent', {});
+        })
+      }));
 
       this.addChild(new DropDownButton({
         label: 'About TimeClock',
@@ -68,18 +87,19 @@ define([
     // @Override
     startup: function() {
       this.inherited(arguments);
+
+      this.emit('requestclockcontent', {});
     },
 
     // @Override
     destroy: function() {
+      this.user = null;
       this.userBtn = null;
 
       this.inherited(arguments);
     },
 
     setUserInfo: function(data) {
-      console.log('header.onDirty');
-
       lang.mixin(this.user, data);
       this.userBtn.set('label', this.user.name);
       this.userBtn.set('iconClass', this.user.iconClass);

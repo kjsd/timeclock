@@ -14,39 +14,47 @@
 define([
   'dojo/_base/lang',
   'dojo/_base/array',
-  'dojox/storage',
   'dijit/layout/BorderContainer',
-  'dijit/layout/TabContainer',
-  'timeclock/widgets/Header',
-  'timeclock/widgets/ClockContent',
-  'timeclock/widgets/TimeLogContent',
-], function(lang, array, storage, BorderContainer, TabContainer, Header,
-            ClockContent, TimeLogContent) {
+  'timeclock/widgets/Header'
+], function(lang, array, BorderContainer, Header) {
+
   return {
-    base: null,
-
     startup: function() {
-      this.base = new BorderContainer({
-        style: 'width: 100%; height: 100%; margin: 0; padding: 0;'
+      var base = new BorderContainer({
+        style: 'width: 100%; height: 100%; margin: 0; padding: 0;',
+        gutters: false
       });
 
-      this.base.addChild(new Header({
+      var currentContent;
+      var showBody = function(contentName) {
+        if (currentContent == contentName) return;
+
+        array.forEach(base.getChildren(), function(child) {
+          if (child.region == 'center') {
+            base.removeChild(child);
+            child.destroyRecursive();
+          }
+        });
+        require([contentName], function(cont) {
+          base.addChild(new cont({ region: 'center' }));
+          currentContent = contentName;
+        });
+      };
+
+      var h = new Header({
         region: 'top'
-      }));
-
-      var main = new TabContainer({
-        region: 'center'
       });
-      main.addChild(new ClockContent({
-        title: '<span class="tcClockIcon"></span>TimeClock'
-      }));
-      main.addChild(new TimeLogContent({
-        title: '<span class="tcTableIcon"></span>TimeLog'
-      }));
-      this.base.addChild(main);
+      h.on('requestclockcontent', function() {
+        showBody('timeclock/widgets/ClockContent');
+      });
+      h.on('requesttimelogcontent', function() {
+        showBody('timeclock/widgets/TimeLogContent');
+      });
 
-      this.base.placeAt(document.body);
-      this.base.startup();
+      base.addChild(h);
+
+      base.placeAt(document.body);
+      base.startup();
     }
   };
 });

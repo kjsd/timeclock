@@ -19,18 +19,19 @@ define([
   'dijit/form/Select',
   'dijit/form/Button',
   'dijitkj/IntervalTextBox',
-  'dijitkj/AutoDestroyDialog',
+  'dijitkj/NotifyDialog',
   'timeclock/models/User',
   'timeclock/request'
 ], function(declare, lang, domConstruct, domAttr, Select, Button,
-            IntervalTextBox, AutoDestroyDialog, User, request) {
+            IntervalTextBox, NotifyDialog, User, request) {
 
-  return declare(AutoDestroyDialog, {
+  return declare(NotifyDialog, {
     style: 'margin: 0; padding 0;',
     user: null,
     nameDom: null,
     breakTime: null,
     iconSelect: null,
+    dirty: false,
 
     // @Override
     postCreate: function() {
@@ -38,11 +39,7 @@ define([
 
       this.set('title', 'About you');
 
-      var base = domConstruct.create('div');
-      var main = domConstruct.create('div', {
-        class: 'dijitDialogPaneContentArea'
-      }, base);
-      
+      var main = domConstruct.create('div');
       var namepara = domConstruct.create('p', null, main);
 
       this.iconSelect = new Select({
@@ -90,7 +87,7 @@ define([
             }
           }).then(lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.emit('dirty', this.user);
+            this.emit('dirty', {});
           }), request.errback);
         })
       });
@@ -116,26 +113,14 @@ define([
             }
           }).then(lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.emit('dirty', this.user);
+            this.emit('dirty', {});
           }), request.errback);
         })
       });
       domConstruct.place(this.breakTime.domNode,
                          domConstruct.create('td', null, tr));
 
-      var footer = domConstruct.create('div', {
-        class: 'dijitDialogPaneActionBar'
-      }, base);
-
-      var btn = new Button({
-        label: 'OK',
-        onClick: lang.hitch(this, function() {
-          this.hide();
-        })
-      });
-      domConstruct.place(btn.domNode, footer);
-
-      this.set('content', base);
+      this.set('content', main);
     },
 
     // @Override
@@ -145,6 +130,11 @@ define([
 
     // @Override
     destroy: function() {
+      this.user = null;
+      this.nameDom = null;
+      this.breakTime = null;
+      this.iconSelect = null;
+
       this.inherited(arguments);
     },
 
