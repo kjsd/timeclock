@@ -14,12 +14,13 @@
 define([
   'dojo/_base/lang',
   'dojo/_base/declare',
+  'dojo/Deferred',
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
   'timeclock/request',
   'timeclock/widgets/AboutYouDialog'
-], function(lang, declare, DropDownMenu, MenuItem, MenuSeparator,
+], function(lang, declare, Deferred, DropDownMenu, MenuItem, MenuSeparator,
             request, AboutYouDialog) {
   return declare(DropDownMenu, {
     user: null,
@@ -33,13 +34,11 @@ define([
         iconClass: 'tcUserUnknownIcon',
         onClick: lang.hitch(this, function() {
           var userDialog = new AboutYouDialog({ user: this.user });
-          var dirtyHdl = lang.hitch(this, this.onDirty);
-          declare.safeMixin(userDialog, {
-            onDirty: function() {
-              this.inherited(arguments);
-              dirtyHdl();
-            }
-          });
+          userDialog.on('dirty', lang.hitch(this, function(data) {
+            this.user = data;
+            this.emit('dirty', data);
+          }));
+
           userDialog.show();
         })
       }));
@@ -72,10 +71,6 @@ define([
     // @Override
     destroy: function() {
       this.inherited(arguments);
-    },
-
-    onDirty: function() {
-      // nop.
     }
   });
 });

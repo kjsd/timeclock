@@ -14,18 +14,15 @@
 define([
   'dojo/_base/declare',
   'dojo/_base/lang',
-  'dojo/_base/array',
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
   'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
-  'timeclock/request',
-  'timeclock/templates'
-], function(declare, lang, array, Toolbar, ToolbarSeparator,
-            DropDownButton, User, AboutMeDialog, UserMenu, request,
-            templates) {
+  'timeclock/request'
+], function(declare, lang, Toolbar, ToolbarSeparator,
+            DropDownButton, User, AboutMeDialog, UserMenu, request) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
@@ -42,14 +39,7 @@ define([
         style: 'display: none;',
         user: this.user
       });
-      var userOkHdl = lang.hitch(this, this.setUserInfo);
-      declare.safeMixin(menu, {
-        onDirty: function() {
-          this.inherited(arguments);
-
-          request('/res/me').then(userOkHdl, request.errback);
-        }
-      });
+      menu.on('dirty', lang.hitch(this, this.setUserInfo));
 
       this.userBtn = new DropDownButton({
         style: 'font-weight: bold;',
@@ -88,6 +78,8 @@ define([
     },
 
     setUserInfo: function(data) {
+      console.log('header.onDirty');
+
       lang.mixin(this.user, data);
       this.userBtn.set('label', this.user.name);
       this.userBtn.set('iconClass', this.user.iconClass);

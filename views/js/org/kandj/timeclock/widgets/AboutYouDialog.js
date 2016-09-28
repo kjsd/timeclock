@@ -21,10 +21,9 @@ define([
   'dijitkj/IntervalTextBox',
   'dijitkj/AutoDestroyDialog',
   'timeclock/models/User',
-  'timeclock/request',
-  'timeclock/templates'
+  'timeclock/request'
 ], function(declare, lang, domConstruct, domAttr, Select, Button,
-            IntervalTextBox, AutoDestroyDialog, User, request, templates) {
+            IntervalTextBox, AutoDestroyDialog, User, request) {
 
   return declare(AutoDestroyDialog, {
     style: 'margin: 0; padding 0;',
@@ -32,7 +31,6 @@ define([
     nameDom: null,
     breakTime: null,
     iconSelect: null,
-    dirty: false,
 
     // @Override
     postCreate: function() {
@@ -50,6 +48,8 @@ define([
       this.iconSelect = new Select({
         sortByLabel: false,
         options: [
+          { value: 'tcUserSilhouetteIcon',
+            label: '<div class="tcUserSilhouetteIcon" />' },
           { value: 'tcUserIcon',
             label: '<div class="tcUserIcon" />' },
           { value: 'tcUserFemaleIcon',
@@ -90,7 +90,7 @@ define([
             }
           }).then(lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.dirty = true;
+            this.emit('dirty', this.user);
           }), request.errback);
         })
       });
@@ -116,7 +116,7 @@ define([
             }
           }).then(lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.dirty = true;
+            this.emit('dirty', this.user);
           }), request.errback);
         })
       });
@@ -130,18 +130,6 @@ define([
       var btn = new Button({
         label: 'OK',
         onClick: lang.hitch(this, function() {
-          if (!this.dirty) {
-            this.user.iconClass = this.iconSelect.get('value');
-            this.user.breakTime = this.breakTime.get('interval');
-
-            request.put('/res/me', {
-              data: this.user
-            }).then(lang.hitch(this, function(data) {
-              lang.mixin(this.user, data);
-              this.dirty = true;
-            }), request.errback);
-          }
-
           this.hide();
         })
       });
@@ -176,19 +164,9 @@ define([
       }
     },
 
-    // @Override
-    onHide: function() {
-      this.inherited(arguments);
-
-      if (this.dirty) this.onDirty();
-    },
-
-    onDirty: function() {
-      // nop.
-    },
-
     setUserInfo: function() {
       domAttr.set(this.nameDom, 'innerHTML', this.user.name);
+
       this.iconSelect.set('value', this.user.iconClass);
       this.breakTime.set('interval', this.user.breakTime);
     }
