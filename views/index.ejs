@@ -3,6 +3,10 @@
   <head>
     <title>TimeClock</title>
     <meta charset="utf-8" />
+    <meta name="description" content="The Web-Based Timeclock and
+                                      recording time log for you the
+                                      worker" />
+    <meta name="keywords" content="Timeclock,Timelog,employee,worker" />
 
     <% if (is_desktop) { %>
       <link rel="stylesheet"
@@ -25,9 +29,6 @@
     </div>
 
     <script>
-     // Instead of using data-dojo-config, we're creating a dojoConfig
-     // object *before* we load dojo.js; they're functionally identical,
-     // it's just easier to read this approach with a larger configuration.
      var dojoConfig = {
        async: true,
        packages: [{

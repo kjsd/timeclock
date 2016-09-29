@@ -20,8 +20,11 @@ define([
     content: '<div>'
       + '<p>TimeClock / v0.0.1</p>'
       + '<hr />'
-      + '<p>Copyright (c) 2016 K&J Software Design Corp. '
-      + 'All Rights Reserved.</p>'
+      + '<p>'
+      + '<div>Copyright (c) 2016 K&J Software Design Corp. '
+      + 'All Rights Reserved.</div>'
+      + '<a href="http://www.kandj.org">http://www.kandj.org</a>'
+      + '</p>'
       + '</div>',
 
     // @Override

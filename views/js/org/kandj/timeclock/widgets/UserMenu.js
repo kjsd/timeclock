@@ -20,9 +20,10 @@ define([
   'dijit/MenuSeparator',
   'dijitkj/AutoDestroyDialog',
   'timeclock/request',
+  'timeclock/token',
   'timeclock/widgets/AboutYouDialog'
 ], function(lang, declare, Deferred, DropDownMenu, MenuItem, MenuSeparator,
-            Dialog, request, AboutYouDialog) {
+            Dialog, request, token, AboutYouDialog) {
   return declare(DropDownMenu, {
     user: null,
 
@@ -58,10 +59,11 @@ define([
         iconClass: 'tcControlPowerIcon',
         onClick: function() {
           request.autoRetryHelper.put('/res/me/logout');
+          token.clear();
           new Dialog({
             closable: false,
             title: 'Logout',
-            href: '/empty',
+            href: '/bye',
             onLoad: function() {
               require([
                 'dojo/dom-style',

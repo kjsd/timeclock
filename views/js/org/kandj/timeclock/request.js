@@ -35,27 +35,43 @@ define([
 
   var getRetryBack = function(defer, useDefaultErrBack = true) {
     return function(err) {
+      var showLoginDialog = function(title, msg) {
+        new Dialog({
+          title: title,
+          content: msg,
+          onOKClick: function() {
+            window.location.href = '/auth/google';
+          }
+        }).show();
+      };
+
       switch (err.response.status) {
       case 401:
-        token.retrieve().then(function() {
-          defer.progress();
-        }, function(e) {
-          defer.reject(e);
-          new Dialog({
-            title: 'Login',
-            content: 'Please login your Google account. Press `OK\' to'
-              + ' redirect Google login page',
-            onOKClick: function() {
-              window.location.href = '/auth/google';
-            }
-          }).show();
-        });
+        if (!token.get()) {
+          defer.reject(err);
+          showLoginDialog('Welcome!',
+                          '<h3>This site provides the Web-Based Timeclock'
+                          + ' and recording time log for you the'
+                          + ' worker.</h3>'
+                          + 'You can start so easy! It just only a Google'
+                          + ' account what you need. Please press'
+                          + ' `OK\' to login and I will redirect you'
+                          + ' to Google login page.');
+        } else {
+          token.retrieve().then(function() {
+            defer.progress();
+          }, function(e) {
+            defer.reject(e);
+            showLoginDialog('Login',
+                            'Authorization expired. Please login'
+                            + ' again.');
+          });
+        }
         break;
 
       default:
         defer.reject(err);
         if (useDefaultErrBack) giveUp(err);
-        break;
       }
     };
   };

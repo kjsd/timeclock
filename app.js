@@ -53,8 +53,8 @@ device.enableDeviceHelpers(app);
 app.get('/', function(req, res) {
   res.render('index.ejs');
 });
-app.get('/empty', function(req, res) {
-  res.render('empty.ejs');
+app.get('/bye', function(req, res) {
+  res.render('bye.ejs');
 });
 
 // Authentication controllers
@@ -92,7 +92,7 @@ app.get('/auth/google', passport.authenticate('google', {
 
 app.get('/auth/google/callback', passport.authenticate('google', {
   session: false,
-  failureRedirect: "/empty"
+  failureRedirect: "/bye"
 }), function(req, res) {
   res.render('token.ejs', { token_: req.user.accessToken });
 });

@@ -18,25 +18,16 @@ define([
   'dijitkj/NotifyDialog'
 ], function(declare, domConstruct, domAttr, NotifyDialog) {
   return declare(NotifyDialog, {
-    style: 'width: 300px;',
+    style: 'width: 400px;',
 
     // @Override
-    createContent: function(cont) {
-      var base = domConstruct.create('div');
-      var icon = domConstruct.create('span', {
-        class: 'dijitIconError',
-        style: 'float: left; margin: 10px 10px;'
-      }, base);
-      var main = domConstruct.create('span', null, base);
+    buildRendering: function() {
+      this._set('title',
+                '<span class="dijitIconError" style="float:'
+                + ' left"></span>'
+                + this._get('title'));
 
-      if (typeof(cont) == 'object') {
-        domConstruct.place(cont, main);
-      } else {
-        domAttr.set(main, 'innerHTML', cont);
-      }
-
-      cont = base;
-      return this.inherited(arguments);
+      this.inherited(arguments);
     }
   });
 });

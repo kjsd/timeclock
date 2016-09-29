@@ -44,6 +44,10 @@ define([
     return defer.promise;
   };
 
+  token.clear = function() {
+    return token.set(null);
+  };
+
   token.retrieve = function() {
     var defer = new Deferred();
 
