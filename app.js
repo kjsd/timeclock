@@ -22,6 +22,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
+var refresh = require('passport-oauth2-refresh');
 var User = require('models/User');
 
 
@@ -57,10 +58,10 @@ app.get('/empty', function(req, res) {
 });
 
 // Authentication controllers
-passport.use(new GoogleStrategy({
+var strategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.BASE_URL + '/token/callback'
+  callbackURL: process.env.BASE_URL + '/auth/google/callback'
 }, function(accessToken, refreshToken, profile, done) {
   process.nextTick(function() {
     User.findOrCreate({ id: profile.id }, function (err, user) {
@@ -70,27 +71,30 @@ passport.use(new GoogleStrategy({
       user.name = profile.displayName;
       user.accessToken = accessToken;
       user.refreshToken = refreshToken;
-      user.lastTokenUpdate = now.toISOString();
+      user.lastLogin = now.toISOString();
       user.lastAccess = now.toISOString();
       user.save();
       
       return done(null, user);
     });
   });
-}));
+});
 
-app.get('/token', passport.authenticate('google', {
+passport.use(strategy);
+refresh.use(strategy);
+
+app.get('/auth/google', passport.authenticate('google', {
   session: false,
   scope: ['https://www.googleapis.com/auth/plus.login'],
   accessType: 'offline',
   approvalPrompt: 'force'
 }));
 
-app.get('/token/callback', passport.authenticate('google', {
+app.get('/auth/google/callback', passport.authenticate('google', {
   session: false,
   failureRedirect: "/empty"
 }), function(req, res) {
-  res.render('token.ejs', { token: req.user.accessToken });
+  res.render('token.ejs', { token_: req.user.accessToken });
 });
 
 // Resource controllers and Token Authentication
@@ -99,24 +103,51 @@ passport.use(new BearerStrategy(function(token, done) {
     if (err)  return done(err);
     if (!user) { return done(null, false); }
 
-    var now = new Date();
-    var la = Date.parse(user.lastAccess);
-    var lu = Date.parse(user.lastTokenUpdate);
-    if ((now.getTime() - la > 600000) || (now.getTime() - lu > 864000000)) {
-      // return 401 when 10 min no access or 10 days no update
-      return done(null, false);
-    }
-
-    user.lastAccess = now.toISOString();
-    user.save();
-
     return done(null, user, { scope: 'all' });
   });
 }));
 
+app.get('/token', passport.authenticate('bearer', {
+  session: false
+}), function(req, res) {
+  var now = new Date();
+  if (now.getTime() - Date.parse(req.user.lastLogin) > 864000000) {
+    // return 401 when 10days no login
+    res.sendStatus(401);
+    return;
+  }
+
+  refresh.requestNewAccessToken(
+    'google', req.user.refreshToken,
+    function(err, accessToken, refreshToken) {
+      if (err) {
+        res.sendStatus(401);
+        return;
+      }
+      req.user.accessToken = accessToken;
+      req.user.lastAccess = new Date().toISOString();
+      req.user.save();
+
+      res.json({ token: accessToken });
+    }
+  );
+});
+
 app.use('/res', passport.authenticate('bearer', {
   session: false
-}), require('controllers/main'));
+}), function(req, res, next) {
+  var now = new Date();
+  if (now.getTime() - Date.parse(req.user.lastAccess) > 600000) {
+    // return 401 when 10min no access
+    res.sendStatus(401);
+    return;
+  }
+
+  req.user.lastAccess = now.toISOString();
+  req.user.save();
+
+  next();
+}, require('controllers/main'));
 
 
 var server = app.listen(process.env.PORT || '3000', function () {

@@ -35,7 +35,6 @@ define([
     // @Override
     onShow: function() {
       this.inherited(arguments);
-      console.log('onShow');
     },
 
     // @Override

@@ -14,18 +14,51 @@
 define([
   'dojo/_base/lang',
   'dojo/request/xhr',
-  'dojox/storage',
-], function(lang, xhr, storage) {
-  // cache
-  var token;
+  'dojo/Deferred',
+  'dijitkj/NotifyDialog',
+  'timeclock/token',
+], function(lang, xhr, Deferred, Dialog, token) {
 
-  function request(url, options) {
-    if (!token) {
-      var storageProvider = dojox.storage.manager.getProvider();
-      storageProvider.initialize();
-      token = storageProvider.get("token");
+  var giveUp = function(err) {
+    var msg = 'Error: ';
+
+    if (!err.response.status) {
+      msg += '\n';
+    } else {
+      msg += err.response.status + '\n';
     }
+    msg += 'Request URL: ' + err.response.url + '\n\n';
+    msg += err.message + '\n';
 
+    window.alert(msg);
+  };
+
+  var getRetryBack = function(defer, useDefaultErrBack = true) {
+    return function(err) {
+      switch (err.response.status) {
+      case 401:
+        token.retrieve().then(function() {
+          defer.progress();
+        }, function(e) {
+          defer.reject(e);
+          new Dialog({
+            content: 'Google Login',
+            onOKClick: function() {
+              window.location.href = '/auth/google';
+            }
+          }).show();
+        });
+        break;
+
+      default:
+        defer.reject(err);
+        if (useDefaultErrBack) giveUp(err);
+        break;
+      }
+    };
+  };
+
+  function request(url, options, useDefaultErrBack = true) {
     var defaultOptions = {
       handleAs: 'json'
     };
@@ -33,12 +66,17 @@ define([
     options = defaultOptions;
 
     var defaultHeader = {
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + token.get()
     };
     lang.mixin(defaultHeader, options.headers);
     options.headers = defaultHeader;
 
-    return xhr(url, options);
+    var defer = new Deferred();
+    xhr(url, options).then(function(v) {
+      defer.resolve(v);
+    }, getRetryBack(defer, useDefaultErrBack));
+
+    return defer.promise;
   };
 
   request.get = function(url, options) {
@@ -60,26 +98,34 @@ define([
     return request(url, newOp);
   };
 
-  request.errback = function(err) {
-    switch (err.response.status) {
-    case 401:
-      window.location.href = '/token';
-      break;
-
-    default:
-      var msg = 'Error: ';
-
-      if (!err.response.status) {
-        msg += '\n';
-      } else {
-        msg += err.response.status + '\n';
-      }
-      msg += 'Request URL: ' + err.response.url + '\n\n';
-      msg += err.message + '\n';
-
-      window.alert(msg);
-      break;
-    }
+  request.autoRetryHelper = function(url, options, okBack, errBack) {
+    request(url, options, !errBack).then(okBack, errBack, function() {
+      request(url, options).then(okBack, errBack);
+    });
+  };
+  request.autoRetryHelper.get = function(url, options, okBack,
+                                         errBack) {
+    var newOp = options ? options: {};
+    newOp.method = 'GET';
+    return request.autoRetryHelper(url, newOp, okBack, errBack);
+  };
+  request.autoRetryHelper.post = function(url, options, okBack,
+                                          errBack) {
+    var newOp = options ? options: {};
+    newOp.method = 'POST';
+    return request.autoRetryHelper(url, newOp, okBack, errBack);
+  };
+  request.autoRetryHelper.put = function(url, options, okBack,
+                                         errBack) {
+    var newOp = options ? options: {};
+    newOp.method = 'PUT';
+    return request.autoRetryHelper(url, newOp, okBack, errBack);
+  };
+  request.autoRetryHelper.delete = function(url, options, okBack,
+                                            errBack) {
+    var newOp = options ? options: {};
+    newOp.method = 'DELETE';
+    return request.autoRetryHelper(url, newOp, okBack, errBack);
   };
 
   return request;

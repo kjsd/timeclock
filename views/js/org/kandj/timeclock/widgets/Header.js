@@ -80,8 +80,8 @@ define([
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
 
-      request('/res/me').then(lang.hitch(this, this.setUserInfo),
-                              request.errback);
+      request.autoRetryHelper('/res/me', null,
+                              lang.hitch(this, this.setUserInfo));
     },
 
     // @Override

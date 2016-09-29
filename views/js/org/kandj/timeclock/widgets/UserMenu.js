@@ -49,16 +49,17 @@ define([
         iconClass: 'tcThumbIcon',
         onClick: function() {
           // tbd. confirm
-          request.delete('/res/me').then(null, request.errback);
+          request.autoRetryHelper.delete('/res/me');
         }
       }));
       this.addChild(new MenuItem({
         label: 'Logout',
         iconClass: 'tcControlPowerIcon',
         onClick: function() {
-          request.put('/res/me/logout').then(function(data) {
-            window.location.href = '/empty';
-          }, request.errback);
+          request.autoRetryHelper.put('/res/me/logout', null,
+                                      function() {
+                                        window.location.href = '/empty';
+                                      });
         }
       }));
     },

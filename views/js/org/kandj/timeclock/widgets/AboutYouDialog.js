@@ -81,14 +81,14 @@ define([
         onChange: lang.hitch(this, function(v) {
           if (v == this.user.iconClass) return;
 
-          request.put('/res/me', {
+          request.autoRetryHelper.put('/res/me', {
             data: {
               iconClass: v
             }
-          }).then(lang.hitch(this, function(data) {
+          }, lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
             this.emit('dirty', {});
-          }), request.errback);
+          }));
         })
       });
       domConstruct.place(this.iconSelect.domNode, namepara);
@@ -107,14 +107,14 @@ define([
           var newVal = this.breakTime.get('interval');
           if (newVal == this.user.breakTime) return;
 
-          request.put('/res/me', {
+          request.autoRetryHelper.put('/res/me', {
             data: {
               breakTime: newVal
             }
-          }).then(lang.hitch(this, function(data) {
+          }, lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
             this.emit('dirty', {});
-          }), request.errback);
+          }));
         })
       });
       domConstruct.place(this.breakTime.domNode,
@@ -147,10 +147,11 @@ define([
       } else {
         this.user = new User();
 
-        request('/res/me').then(lang.hitch(this, function(data) {
-          lang.mixin(this.user, data);
-          this.setUserInfo();
-        }), request.errback);
+        request.autoRetryHelper('/res/me', null,
+                                lang.hitch(this, function(data) {
+                                  lang.mixin(this.user, data);
+                                  this.setUserInfo();
+                                }));
       }
     },
 

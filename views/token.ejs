@@ -3,7 +3,11 @@
   <body>
     <script>
      var dojoConfig = {
-       async: true
+       async: true,
+       packages: [{
+         name: 'timeclock',
+         location: '/js/org/kandj/timeclock'
+       }]
      };
     </script>
     <script
@@ -11,17 +15,11 @@
     </script>
     <script>
      require([
-       'dojox/storage',
-       'dojo/ready'
-     ], function(storage, ready) {
-       var token = '<%= token %>';
-
-       ready(function() {
-         var storageProvider = dojox.storage.manager.getProvider();
-         storageProvider.initialize();
-         storageProvider.put("token", token, function(status, keyName) {
-           window.location.href = '/';
-         });
+       'timeclock/token',
+       'dojo/domReady!'
+     ], function(token) {
+       token.set('<%= token_ %>').then(function() {
+         window.location.href = '/';
        });
      });
     </script>

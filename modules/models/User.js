@@ -24,7 +24,7 @@ var scheme_ = {
   breakTime: 3600,
   iconClass: 'tcUserSilhouetteIcon',
   lastAccess: '',
-  lastTokenUpdate: ''
+  lastLogin: ''
 };
 
 function User(args) {

@@ -65,6 +65,8 @@ define([
       var btn = new Button({
         label: 'OK',
         onClick: lang.hitch(this, function() {
+          var hdl = this._get('onOKClick');
+          if (hdl) hdl();
           this.hide();
         })
       });
