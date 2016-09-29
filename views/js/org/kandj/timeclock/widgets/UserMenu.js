@@ -18,10 +18,11 @@ define([
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
+  'dijitkj/AutoDestroyDialog',
   'timeclock/request',
   'timeclock/widgets/AboutYouDialog'
 ], function(lang, declare, Deferred, DropDownMenu, MenuItem, MenuSeparator,
-            request, AboutYouDialog) {
+            Dialog, request, AboutYouDialog) {
   return declare(DropDownMenu, {
     user: null,
 
@@ -56,10 +57,33 @@ define([
         label: 'Logout',
         iconClass: 'tcControlPowerIcon',
         onClick: function() {
-          request.autoRetryHelper.put('/res/me/logout', null,
-                                      function() {
-                                        window.location.href = '/empty';
-                                      });
+          request.autoRetryHelper.put('/res/me/logout');
+          new Dialog({
+            closable: false,
+            title: 'Logout',
+            href: '/empty',
+            onLoad: function() {
+              require([
+                'dojo/dom-style',
+                'dojo/_base/fx'
+              ], function(domStyle, fx) {
+                fx.fadeIn({
+                  node: 'msg',
+                  onEnd: function(node) {
+                    setTimeout(function() {
+                      fx.fadeOut({
+	                    node: node,
+	                    onEnd: function(node){
+	                      domStyle.set(node, 'display', 'none');
+	                      domStyle.set('link', 'display', 'block');
+	                    }
+	                  }).play();
+                    }, 1000);
+                  }
+                }).play();
+              });
+            }
+          }).show();
         }
       }));
     },

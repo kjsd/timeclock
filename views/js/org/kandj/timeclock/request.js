@@ -15,7 +15,7 @@ define([
   'dojo/_base/lang',
   'dojo/request/xhr',
   'dojo/Deferred',
-  'dijitkj/NotifyDialog',
+  'dijitkj/ErrorDialog',
   'timeclock/token',
 ], function(lang, xhr, Deferred, Dialog, token) {
 
@@ -42,7 +42,9 @@ define([
         }, function(e) {
           defer.reject(e);
           new Dialog({
-            content: 'Google Login',
+            title: 'Login',
+            content: 'Please login your Google account. Press `OK\' to'
+              + ' redirect Google login page',
             onOKClick: function() {
               window.location.href = '/auth/google';
             }

@@ -14,16 +14,20 @@
 define([
   'dojo/_base/declare',
   'dojo/_base/lang',
+  'dojo/dom-class',
+  'dojo/query',
+  'dijit/registry',
   'dijit/Toolbar',
   'dijit/ToolbarSeparator',
   'dijit/form/DropDownButton',
   'dijit/form/Button',
-  'timeclock/models/User',
   'timeclock/widgets/AboutMeDialog',
   'timeclock/widgets/UserMenu',
+  'timeclock/models/User',
   'timeclock/request'
-], function(declare, lang, Toolbar, ToolbarSeparator, DropDownButton,
-            Button, User, AboutMeDialog, UserMenu, request) {
+], function(declare, lang, domClass, query, registry, Toolbar,
+            ToolbarSeparator, DropDownButton, Button, AboutMeDialog,
+            UserMenu, User, request) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
@@ -51,26 +55,34 @@ define([
         dropDown: menu,
         disabled: true
       });
+      domClass.add(this.userBtn.domNode, 'tcLoginWidget');
 
       this.addChild(this.userBtn);
       this.addChild(new ToolbarSeparator());
 
-      this.addChild(new Button({
+      var btn = new Button({
         label: 'Home',
         iconClass: 'tcHomeIcon',
         showLabel: true,
+        disabled: true,
         onClick: lang.hitch(this, function() {
           this.emit('requestclockcontent', {});
         })
-      }));
-      this.addChild(new Button({
+      });
+      domClass.add(btn.domNode, 'tcLoginWidget');
+      this.addChild(btn);
+
+      btn = new Button({
         label: 'TimeLog',
         iconClass: 'tcTableIcon',
         showLabel: true,
+        disabled: true,
         onClick: lang.hitch(this, function() {
           this.emit('requesttimelogcontent', {});
         })
-      }));
+      });
+      domClass.add(btn.domNode, 'tcLoginWidget');
+      this.addChild(btn);
 
       this.addChild(new DropDownButton({
         label: 'About TimeClock',
@@ -80,15 +92,22 @@ define([
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
 
-      request.autoRetryHelper('/res/me', null,
-                              lang.hitch(this, this.setUserInfo));
+      request.autoRetryHelper(
+        '/res/me', null, lang.hitch(this,function(data) {
+          this.setUserInfo(data);
+          query('.tcLoginWidget').forEach(function(n) {
+            var w = registry.byNode(n);
+            if (w) w.set('disabled', false);
+          });
+
+          this.emit('requestclockcontent', {});
+        })
+      );
     },
 
     // @Override
     startup: function() {
       this.inherited(arguments);
-
-      this.emit('requestclockcontent', {});
     },
 
     // @Override
@@ -103,7 +122,6 @@ define([
       lang.mixin(this.user, data);
       this.userBtn.set('label', this.user.name);
       this.userBtn.set('iconClass', this.user.iconClass);
-      this.userBtn.set('disabled', false);
     }
   });
 });

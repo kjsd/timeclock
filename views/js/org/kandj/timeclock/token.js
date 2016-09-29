@@ -53,7 +53,6 @@ define([
         'Authorization': 'Bearer ' + token.get()
       }
     }).then(function(v) {
-      console.log(v);
       token.set(v.token).then(function() {
         defer.resolve();
       });

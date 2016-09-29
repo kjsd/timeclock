@@ -52,7 +52,7 @@ define([
         class: 'dijitDialogPaneContentArea'
       }, base);
 
-      if (typeof(cont) == "object") {
+      if (typeof(cont) == 'object') {
         domConstruct.place(cont, main);
       } else {
         domAttr.set(main, 'innerHTML', cont);
