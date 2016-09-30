@@ -149,6 +149,10 @@ app.use('/res', passport.authenticate('bearer', {
   next();
 }, require('controllers/main'));
 
+app.get('/now', function(req, res) {
+  res.json({ date: new Date().toISOString() });
+});
+
 
 var server = app.listen(process.env.PORT || '3000', function () {
   console.log('App listening on port %s', server.address().port);

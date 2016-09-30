@@ -20,9 +20,6 @@ router.get('/true', function(req, res) {
 router.get('/false', function(req, res) {
   res.sendStatus(400);
 });
-router.get('/now', function(req, res) {
-  res.json({ date: new Date().toISOString() });
-});
 
 router.use('/me', require('controllers/me'));
 

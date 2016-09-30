@@ -48,15 +48,6 @@ html, body {
   float: none;
 }
 
-.tabLabel {
-    font-size: small;
-    font-weight: bold;
-}
-
-.soria .dijitTab {
-    padding-top: 1px;
-}
-
 .tcRed
 {
    color: red;

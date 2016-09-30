@@ -91,6 +91,11 @@ define([
         showLabel: false,
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
+    },
+
+    // @Override
+    startup: function() {
+      this.inherited(arguments);
 
       request.autoRetryHelper(
         '/res/me', null, lang.hitch(this, function(data) {
@@ -101,11 +106,6 @@ define([
           });
         })
       );
-    },
-
-    // @Override
-    startup: function() {
-      this.inherited(arguments);
 
       this.emit('requestclockcontent', {});
     },
