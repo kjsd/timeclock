@@ -34,7 +34,7 @@ define([
     dirty: false,
 
     // @Override
-    postCreate: function() {
+    buildRendering: function() {
       this.inherited(arguments);
 
       this.set('title', 'About you');

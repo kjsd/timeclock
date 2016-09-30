@@ -18,7 +18,7 @@ define([
   'dijit/layout/BorderContainer'
 ], function(declare, lang, ContentPane, BorderContainer) {
   return declare(ContentPane, {
-    top_container: null,
+    style: 'font-size: 3em; text-align: center; overflow: hidden',
     
     // @Override
     postCreate: function() {

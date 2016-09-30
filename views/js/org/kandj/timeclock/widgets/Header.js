@@ -34,7 +34,7 @@ define([
     userBtn: null,
 
     // @Override
-    postCreate: function() {
+    buildRendering: function() {
       this.inherited(arguments);
 
       this.user = new User();
@@ -93,14 +93,12 @@ define([
       }));
 
       request.autoRetryHelper(
-        '/res/me', null, lang.hitch(this,function(data) {
+        '/res/me', null, lang.hitch(this, function(data) {
           this.setUserInfo(data);
           query('.tcLoginWidget').forEach(function(n) {
             var w = registry.byNode(n);
             if (w) w.set('disabled', false);
           });
-
-          this.emit('requestclockcontent', {});
         })
       );
     },
@@ -108,6 +106,8 @@ define([
     // @Override
     startup: function() {
       this.inherited(arguments);
+
+      this.emit('requestclockcontent', {});
     },
 
     // @Override

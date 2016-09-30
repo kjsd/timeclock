@@ -28,7 +28,7 @@ define([
     user: null,
 
     // @Override
-    postCreate: function() {
+    buildRendering: function() {
       this.inherited(arguments);
 
       this.addChild(new MenuItem({
@@ -46,12 +46,43 @@ define([
       }));
 
       this.addChild(new MenuSeparator());
+
+      var showGoodbyeDialog = function() {
+        new Dialog({
+          closable: false,
+          title: 'Logout',
+          href: '/bye',
+          onLoad: function() {
+            require([
+              'dojo/dom-style',
+              'dojo/_base/fx'
+            ], function(domStyle, fx) {
+              fx.fadeIn({
+                node: 'msg',
+                onEnd: function(node) {
+                  setTimeout(function() {
+                    fx.fadeOut({
+	                  node: node,
+	                  onEnd: function(node){
+	                    domStyle.set(node, 'display', 'none');
+	                    domStyle.set('link', 'display', 'block');
+	                  }
+	                }).play();
+                  }, 1000);
+                }
+              }).play();
+            });
+          }
+        }).show();
+      };
+
       this.addChild(new MenuItem({
         label: 'Logout and Deactivate (dropped all data!)',
         iconClass: 'tcThumbIcon',
         onClick: function() {
           // tbd. confirm
           request.autoRetryHelper.delete('/res/me');
+          showGoodbyeDialog();
         }
       }));
       this.addChild(new MenuItem({
@@ -60,32 +91,7 @@ define([
         onClick: function() {
           request.autoRetryHelper.put('/res/me/logout');
           token.clear();
-          new Dialog({
-            closable: false,
-            title: 'Logout',
-            href: '/bye',
-            onLoad: function() {
-              require([
-                'dojo/dom-style',
-                'dojo/_base/fx'
-              ], function(domStyle, fx) {
-                fx.fadeIn({
-                  node: 'msg',
-                  onEnd: function(node) {
-                    setTimeout(function() {
-                      fx.fadeOut({
-	                    node: node,
-	                    onEnd: function(node){
-	                      domStyle.set(node, 'display', 'none');
-	                      domStyle.set('link', 'display', 'block');
-	                    }
-	                  }).play();
-                    }, 1000);
-                  }
-                }).play();
-              });
-            }
-          }).show();
+          showGoodbyeDialog();
         }
       }));
     },

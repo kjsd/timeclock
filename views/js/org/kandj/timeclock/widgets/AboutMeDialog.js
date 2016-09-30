@@ -25,21 +25,6 @@ define([
       + 'All Rights Reserved.</div>'
       + '<a href="http://www.kandj.org">http://www.kandj.org</a>'
       + '</p>'
-      + '</div>',
-
-    // @Override
-    postCreate: function() {
-      this.inherited(arguments);
-    },
-
-    // @Override
-    startup: function() {
-      this.inherited(arguments);
-    },
-
-    // @Override
-    destroy: function() {
-      this.inherited(arguments);
-    }
+      + '</div>'
   });
 });
