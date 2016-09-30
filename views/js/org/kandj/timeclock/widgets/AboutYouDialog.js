@@ -19,13 +19,13 @@ define([
   'dijit/form/Select',
   'dijit/form/Button',
   'dijitkj/IntervalTextBox',
-  'dijitkj/NotifyDialog',
+  'dijitkj/OKDialog',
   'timeclock/models/User',
   'timeclock/request'
 ], function(declare, lang, domConstruct, domAttr, Select, Button,
-            IntervalTextBox, NotifyDialog, User, request) {
+            IntervalTextBox, Dialog, User, request) {
 
-  return declare(NotifyDialog, {
+  return declare(Dialog, {
     style: 'margin: 0; padding 0;',
     user: null,
     nameDom: null,

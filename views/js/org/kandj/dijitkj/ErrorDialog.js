@@ -13,21 +13,11 @@
  ***********************************************************************/
 define([
   'dojo/_base/declare',
-  'dojo/dom-construct',
-  'dojo/dom-attr',
-  'dijitkj/NotifyDialog'
-], function(declare, domConstruct, domAttr, NotifyDialog) {
-  return declare(NotifyDialog, {
+  'dijitkj/OKDialog',
+  'dojo/text!./ErrorDialog.html'
+], function(declare, Dialog, template) {
+  return declare(Dialog, {
     style: 'width: 400px;',
-
-    // @Override
-    buildRendering: function() {
-      this._set('title',
-                '<span class="dijitIconError" style="float:'
-                + ' left"></span>'
-                + this._get('title'));
-
-      this.inherited(arguments);
-    }
+    templateString: template
   });
 });

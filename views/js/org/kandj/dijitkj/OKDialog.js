@@ -1,5 +1,5 @@
 /**
- * @file NotifyDialog.js
+ * @file OKDialog.js
  *
  * @version $Id:$
  *
@@ -22,27 +22,22 @@ define([
             AutoDestroyDialog) {
   return declare(AutoDestroyDialog, {
     // @Override
-    postCreate: function() {
+    buildRendering: function() {
       this.inherited(arguments);
 
       this.set('closable', false);
     },
 
     // @Override
+    _setClosableAttr: function(val) {
+      val = false;
+      this.inherited(arguments);
+    },
+
+    // @Override
     _setContentAttr: function(cont) {
       // arguments are overwrited
       cont = this.createContent(cont);
-
-      this.inherited(arguments);
-    },
-
-    // @Override
-    startup: function() {
-      this.inherited(arguments);
-    },
-
-    // @Override
-    destroy: function() {
       this.inherited(arguments);
     },
 
