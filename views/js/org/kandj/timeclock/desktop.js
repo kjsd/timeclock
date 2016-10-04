@@ -14,12 +14,18 @@
 define([
   'dojo/_base/lang',
   'dojo/_base/array',
+  'dojo/topic',
   'dijit/layout/BorderContainer',
   'timeclock/widgets/Header'
-], function(lang, array, BorderContainer, Header) {
+], function(lang, array, topic, BorderContainer, Header) {
 
   return {
     startup: function() {
+      var logined = false;
+      topic.subscribe('user/login', function() {
+        logined = true;
+      });
+
       var base = new BorderContainer({
         style: 'width: 100%; height: 100%;',
         gutters: false
@@ -36,22 +42,31 @@ define([
           }
         });
         require([contentName], function(cont) {
-          base.addChild(new cont({ region: 'center' }));
+          base.addChild(new cont({
+            region: 'center',
+            logined: logined
+          }));
           currentContent = contentName;
         });
       };
 
-      var h = new Header({
-        region: 'top'
-      });
-      h.on('requestclockcontent', function() {
-        showBody('timeclock/widgets/ClockContent');
-      });
-      h.on('requesttimelogcontent', function() {
-        showBody('timeclock/widgets/TimeLogContent');
+      topic.subscribe('content/requestToShow', function(contName) {
+        switch (contName) {
+        case 'clock':
+          showBody('timeclock/widgets/ClockContent');
+          break;
+        case 'timelog':
+          showBody('timeclock/widgets/TimeLogContent');
+          break;
+        default:
+          break;
+        }
       });
 
-      base.addChild(h);
+      base.addChild(new Header({
+        region: 'top'
+      }));
+      showBody('timeclock/widgets/ClockContent');
 
       base.placeAt(document.body);
       base.startup();

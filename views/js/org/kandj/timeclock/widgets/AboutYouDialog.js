@@ -16,14 +16,15 @@ define([
   'dojo/_base/lang',
   'dojo/dom-construct',
   'dojo/dom-attr',
+  'dojo/topic',
   'dijit/form/Select',
   'dijit/form/Button',
   'dijitkj/IntervalTextBox',
   'dijitkj/OKDialog',
   'timeclock/models/User',
   'timeclock/request'
-], function(declare, lang, domConstruct, domAttr, Select, Button,
-            IntervalTextBox, Dialog, User, request) {
+], function(declare, lang, domConstruct, domAttr, topic, Select,
+            Button, IntervalTextBox, Dialog, User, request) {
 
   return declare(Dialog, {
     style: 'margin: 0; padding 0;',
@@ -31,7 +32,6 @@ define([
     nameDom: null,
     breakTime: null,
     iconSelect: null,
-    dirty: false,
 
     // @Override
     buildRendering: function() {
@@ -87,7 +87,7 @@ define([
             }
           }, lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.emit('dirty', {});
+            topic.publish('user/dirty', this.user);
           }));
         })
       });
@@ -100,7 +100,7 @@ define([
       var tbl = domConstruct.create('table', null, main);
       var tr = domConstruct.create('tr', null, tbl);
 
-      domConstruct.place('<td>A breaktime length of a day: </td>', tr);
+      domConstruct.place('<td>A default breaktime length of a day: </td>', tr);
 
       this.breakTime = new IntervalTextBox({
         onChange: lang.hitch(this, function(v) {
@@ -113,7 +113,7 @@ define([
             }
           }, lang.hitch(this, function(data) {
             lang.mixin(this.user, data);
-            this.emit('dirty', {});
+            topic.publish('user/dirty', this.user);
           }));
         })
       });

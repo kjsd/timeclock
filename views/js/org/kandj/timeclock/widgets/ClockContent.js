@@ -16,19 +16,20 @@ define([
   'dojo/_base/lang',
   'dojo/dom-construct',
   'dojo/dom-attr',
-  'dojo/dom-style',
-  'dojo/dom-geometry',
+  'dojo/query',
+  'dojo/topic',
   'dojo/date',
   'dojo/date/stamp',
   'dojo/date/locale',
+  'dijit/registry',
   'dijit/layout/ContentPane',
   'dijit/layout/BorderContainer',
   'dijit/form/Button',
   'dijit/form/TimeTextBox',
   'timeclock/request',
-], function(declare, lang, domConstruct, domAttr, domStyle, domGeom,
-            date, stamp, locale, ContentPane, BorderContainer, Button,
-            TimeTextBox, request) {
+], function(declare, lang, domConstruct, domAttr, query, topic,
+            date, stamp, locale, registry, ContentPane,
+            BorderContainer, Button, TimeTextBox, request) {
 
   return declare(ContentPane, {
     style: 'width: 100%; height: 100%;',
@@ -41,6 +42,11 @@ define([
     dateDom: null,
     timeDom: null,
 
+    userLoginHdl: null,
+    userLogoutHdl: null,
+
+    logined: false,
+
     // @Override
     buildRendering: function() {
       this.inherited(arguments);
@@ -52,8 +58,8 @@ define([
 
       this.timeContent = new ContentPane({
         region: 'top',
-        style: 'font-size: 3em; overflow: hidden;'
-          + ' color: #999;'
+        style: 'text-align: center; font-size: 3em; overflow: hidden;'
+          + ' color: #999; margin: 30px;'
       });
       var timeBase = domConstruct.create('div');
       this.dateDom = domConstruct.create('div', null, timeBase);
@@ -63,17 +69,20 @@ define([
       this.baseContainer.addChild(this.timeContent);
 
       this.leftContent = new ContentPane({
-        region: 'left'
+        region: 'left',
+        style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.leftContent);
 
       this.centerContent = new ContentPane({
-        region: 'center'
+        region: 'center',
+        style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.centerContent);
 
       this.rightContent = new ContentPane({
-        region: 'right'
+        region: 'right',
+        style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.rightContent);
 
@@ -86,11 +95,22 @@ define([
     postCreate: function() {
       this.inherited(arguments);
 
-/*
-      this.centerContent.set('content',
-                             this.getClockingContent('ClockIn'));
-      this.baseContainer.layout();
-*/
+      this.userLoginHdl = topic.subscribe(
+        'user/login', lang.hitch(this, function() {
+          this.logined = true;
+          query('.tcLoginWidget').forEach(function(n) {
+            var w = registry.byNode(n);
+            if (w) w.set('disabled', false);
+          });
+        }));
+      this.userLogoutHdl = topic.subscribe(
+        'user/logout', lang.hitch(this, function() {
+          this.logined = false;
+          query('.tcLoginWidget').forEach(function(n) {
+            var w = registry.byNode(n);
+            if (w) w.set('disabled', true);
+          });
+        }));
     },
 
     // @Override
@@ -102,26 +122,18 @@ define([
     onShow: function() {
       this.inherited(arguments);
 
-      var pos = domGeom.position(this.domNode, true);
-      var tcPos = domGeom.position(this.timeContent.domNode, true);
-      console.log(domGeom.position(this.baseContainer.domNode, true));
-
-      var centerY = pos.y - tcPos.y + (pos.h - tcPos.h);
-      console.log(pos);
-      console.log(tcPos);
-      console.log(centerY);
-      domStyle.set(this.timeContent.domNode, {
-        left: '100px',
-        top: '200px'
-      });
-
       this.timeUpdater = setInterval(
         lang.hitch(this, this.timeUpdate), 1000);
+
+      this.setClockInContent();
     },
 
     // @Override
     destroy: function() {
       clearInterval(this.timeUpdater);
+
+      if (this.userLoginHdl) this.userLoginHdl.remove();
+      if (this.userLogoutHdl) this.userLogoutHdl.remove();
 
       this.dateDom = null;
       this.timeDom = null;
@@ -146,33 +158,18 @@ define([
       }));
     },
 
-    getClockingContent: function(name) {
-      var base = domConstruct.create('div');
-
-      var timeForm = new TimeTextBox({
-        disabled: true,
+    setClockInContent: function() {
+      var btn = new Button({
+        disabled: !this.logined,
         class: 'tcLoginWidget',
-        constraints: {
-          timePattern: "HH:mm",
-          clickableIncrement: "T00:15:00",
-          visibleIncrement: "T00:15:00",
-          visibleRange: "T01:00:00"
-        }
-      });
-      domConstruct.place(timeForm.domNode, base);
-
-      var clockingBtn = new Button({
-        disabled: true,
-        class: 'tcLoginWidget',
-        label: name,
+        style: 'font-size: 3em;',
+        label: 'ClockIn',
         onClick: function() {
           console.log('tbd.');
         }
       });
-      domConstruct.place(clockingBtn.domNode, base);
 
-      return base;
+      this.centerContent.set('content', btn);
     }
-
   });
 });

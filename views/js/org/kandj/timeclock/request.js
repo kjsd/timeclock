@@ -59,7 +59,7 @@ define([
                           + ' to Google login page.');
         } else {
           token.retrieve().then(function() {
-            defer.progress();
+            defer.progress('token updated. need retry');
           }, function(e) {
             defer.reject(e);
             showLoginDialog('Login',

@@ -14,6 +14,7 @@
 define([
   'dojo/_base/lang',
   'dojo/_base/declare',
+  'dojo/topic',
   'dojo/Deferred',
   'dijit/DropDownMenu',
   'dijit/MenuItem',
@@ -22,10 +23,9 @@ define([
   'timeclock/request',
   'timeclock/token',
   'timeclock/widgets/AboutYouDialog'
-], function(lang, declare, Deferred, DropDownMenu, MenuItem, MenuSeparator,
-            Dialog, request, token, AboutYouDialog) {
+], function(lang, declare, topic, Deferred, DropDownMenu, MenuItem,
+            MenuSeparator, Dialog, request, token, AboutYouDialog) {
   return declare(DropDownMenu, {
-    user: null,
 
     // @Override
     buildRendering: function() {
@@ -35,13 +35,7 @@ define([
         label: 'About you',
         iconClass: 'tcUserUnknownIcon',
         onClick: lang.hitch(this, function() {
-          var userDialog = new AboutYouDialog({ user: this.user });
-          userDialog.on('dirty', lang.hitch(this, function(data) {
-            this.user = userDialog.get('user');
-            this.emit('dirty', {});
-          }));
-
-          userDialog.show();
+          new AboutYouDialog().show();
         })
       }));
 
@@ -50,9 +44,11 @@ define([
       var showGoodbyeDialog = function() {
         new Dialog({
           closable: false,
-          title: 'Logout',
+          title: 'See you',
           href: '/bye',
           onLoad: function() {
+            topic.publish('user/logout');
+
             require([
               'dojo/dom-style',
               'dojo/_base/fx'
@@ -103,8 +99,6 @@ define([
 
     // @Override
     destroy: function() {
-      this.user = null;
-
       this.inherited(arguments);
     }
   });
