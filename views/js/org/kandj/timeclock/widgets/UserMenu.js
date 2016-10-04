@@ -19,7 +19,7 @@ define([
   'dijit/DropDownMenu',
   'dijit/MenuItem',
   'dijit/MenuSeparator',
-  'dijitkj/AutoDestroyDialog',
+  'dojokj/AutoDestroyDialog',
   'timeclock/request',
   'timeclock/token',
   'timeclock/widgets/AboutYouDialog'

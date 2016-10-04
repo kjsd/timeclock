@@ -15,7 +15,7 @@ define([
   'dojo/_base/lang',
   'dojo/request/xhr',
   'dojo/Deferred',
-  'dijitkj/ErrorDialog',
+  'dojokj/ErrorDialog',
   'timeclock/token',
 ], function(lang, xhr, Deferred, Dialog, token) {
 

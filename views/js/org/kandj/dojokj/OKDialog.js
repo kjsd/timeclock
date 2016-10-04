@@ -17,7 +17,7 @@ define([
   'dojo/dom-construct',
   'dojo/dom-attr',
   'dijit/form/Button',
-  'dijitkj/AutoDestroyDialog'
+  'dojokj/AutoDestroyDialog'
 ], function(declare, lang, domConstruct, domAttr, Button,
             AutoDestroyDialog) {
   return declare(AutoDestroyDialog, {

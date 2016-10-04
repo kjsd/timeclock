@@ -13,7 +13,7 @@
  ***********************************************************************/
 define([
   'dojo/_base/declare',
-  'dijitkj/OKDialog',
+  'dojokj/OKDialog',
   'dojo/text!./ErrorDialog.html'
 ], function(declare, Dialog, template) {
   return declare(Dialog, {

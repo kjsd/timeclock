@@ -20,7 +20,7 @@ define([
   return declare(ContentPane, {
     
     // @Override
-    postCreate: function() {
+    buildRendering: function() {
       this.inherited(arguments);
 
       this.set('content', 'timeLog');

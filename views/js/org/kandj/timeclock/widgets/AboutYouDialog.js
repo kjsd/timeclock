@@ -19,8 +19,8 @@ define([
   'dojo/topic',
   'dijit/form/Select',
   'dijit/form/Button',
-  'dijitkj/IntervalTextBox',
-  'dijitkj/OKDialog',
+  'dojokj/IntervalTextBox',
+  'dojokj/OKDialog',
   'timeclock/models/User',
   'timeclock/request'
 ], function(declare, lang, domConstruct, domAttr, topic, Select,
