@@ -21,9 +21,9 @@ define([
 
   return {
     startup: function() {
-      var logined = false;
-      topic.subscribe('user/login', function() {
-        logined = true;
+      var user;
+      topic.subscribe('user/login', function(data) {
+        user = data;
       });
 
       var base = new BorderContainer({
@@ -44,7 +44,7 @@ define([
         require([contentName], function(cont) {
           base.addChild(new cont({
             region: 'center',
-            logined: logined
+            user: user
           }));
           currentContent = contentName;
         });

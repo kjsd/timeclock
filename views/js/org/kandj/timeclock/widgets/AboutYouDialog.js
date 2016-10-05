@@ -16,20 +16,27 @@ define([
   'dojo/_base/lang',
   'dojo/dom-construct',
   'dojo/dom-attr',
+  'dojo/dom-style',
+  'dojo/date/stamp',
   'dojo/topic',
   'dijit/form/Select',
   'dijit/form/Button',
+  'dijit/form/TimeTextBox',
   'dojokj/IntervalTextBox',
   'dojokj/OKDialog',
   'timeclock/models/User',
   'timeclock/request'
-], function(declare, lang, domConstruct, domAttr, topic, Select,
-            Button, IntervalTextBox, Dialog, User, request) {
+], function(declare, lang, domConstruct, domAttr, domStyle, stamp,
+            topic, Select, Button, TimeTextBox, IntervalTextBox,
+            Dialog, User, request) {
 
   return declare(Dialog, {
     style: 'margin: 0; padding 0;',
     user: null,
     nameDom: null,
+    clockStateDom: null,
+    hoursStart: null,
+    hoursEnd: null,
     breakTime: null,
     iconSelect: null,
 
@@ -39,8 +46,24 @@ define([
 
       this.set('title', 'About you');
 
+      var userUpdater = lang.hitch(this, function(attr, formatter) {
+        return lang.hitch(this, function(v) {
+          var newVal = (typeof(formatter) == 'function') ? formatter(v): v;
+          if (newVal == this.user[attr]) return;
+
+          var opt = { data: {} };
+          opt.data[attr] = newVal;
+          request.autoRetryHelper.put(
+            '/res/me', opt, lang.hitch(this, function(data) {
+              lang.mixin(this.user, data);
+              topic.publish('user/dirty', this.user);
+            })
+          );
+        });
+      });
+
       var main = domConstruct.create('div');
-      var namepara = domConstruct.create('p', null, main);
+      var namepara = domConstruct.create('div', null, main);
 
       this.iconSelect = new Select({
         sortByLabel: false,
@@ -78,18 +101,7 @@ define([
           { value: 'tcUserWhiteFemaleIcon',
             label: '<div class="tcUserWhiteFemaleIcon" />' },
         ],
-        onChange: lang.hitch(this, function(v) {
-          if (v == this.user.iconClass) return;
-
-          request.autoRetryHelper.put('/res/me', {
-            data: {
-              iconClass: v
-            }
-          }, lang.hitch(this, function(data) {
-            lang.mixin(this.user, data);
-            topic.publish('user/dirty', this.user);
-          }));
-        })
+        onChange: userUpdater('iconClass')
       });
       domConstruct.place(this.iconSelect.domNode, namepara);
 
@@ -97,25 +109,54 @@ define([
         style: 'font-weight: bold; margin: 10px;'
       }, namepara);
 
-      var tbl = domConstruct.create('table', null, main);
-      var tr = domConstruct.create('tr', null, tbl);
+      this.clockStateDom = domConstruct.create('div', {
+        style: 'margin: 10px;'
+      }, main);
 
-      domConstruct.place('<td>A default breaktime length of a day: </td>', tr);
+      var tbl = domConstruct.create('table', null, main);
+
+      var tr = domConstruct.create('tr', null, tbl);
+      domConstruct.place('<td>Your hours: </td>', tr);
+
+      this.hoursStart = new TimeTextBox({
+        style: 'width: 100px',
+        constraints: {
+          timePattern: 'HH:mm'
+        },
+        onChange: userUpdater('hoursStart', function(v) {
+          return stamp.toISOString(v, { selector: 'time' });
+        })
+      });
+      this.hoursEnd = new TimeTextBox({
+        style: 'width: 100px',
+        constraints: {
+          timePattern: 'HH:mm'
+        },
+        onChange: userUpdater('hoursEnd', function(v) {
+          return stamp.toISOString(v, { selector: 'time' });
+        })
+      });
+
+      var td = domConstruct.create('td', null, tr);
+      domConstruct.place(this.hoursStart.domNode, td);
+      domConstruct.create('span', {
+        innerHTML: '-',
+        style: 'margin: 10px;'
+      }, td);
+      domConstruct.place(this.hoursEnd.domNode, td);
+
+      tr = domConstruct.create('tr', null, tbl);
+      domConstruct.place('<td>A breaktime length: </td>', tr);
 
       this.breakTime = new IntervalTextBox({
-        onChange: lang.hitch(this, function(v) {
-          var newVal = this.breakTime.get('interval');
-          if (newVal == this.user.breakTime) return;
-
-          request.autoRetryHelper.put('/res/me', {
-            data: {
-              breakTime: newVal
-            }
-          }, lang.hitch(this, function(data) {
-            lang.mixin(this.user, data);
-            topic.publish('user/dirty', this.user);
-          }));
-        })
+        style: 'width: 100px',
+        constraints: {
+          timePattern: 'HH:mm'
+        },
+        onChange: userUpdater(
+          'breakTime', lang.hitch(this, function(v) {
+            return this.breakTime.get('interval');
+          }))
       });
       domConstruct.place(this.breakTime.domNode,
                          domConstruct.create('td', null, tr));
@@ -126,12 +167,27 @@ define([
     // @Override
     startup: function() {
       this.inherited(arguments);
+
+      if (this.user) {
+        this.setUserInfo();
+      } else {
+        this.user = new User();
+
+        request.autoRetryHelper(
+          '/res/me', null, lang.hitch(this, function(data) {
+            this.setUserInfo(data);
+          })
+        );
+      }
     },
 
     // @Override
     destroy: function() {
       this.user = null;
       this.nameDom = null;
+      this.clockStateDom = null;
+      this.hoursStart = null;
+      this.hoursEnd = null;
       this.breakTime = null;
       this.iconSelect = null;
 
@@ -141,25 +197,26 @@ define([
     // @Override
     onShow: function() {
       this.inherited(arguments);
-
-      if (this.user) {
-        this.setUserInfo();
-      } else {
-        this.user = new User();
-
-        request.autoRetryHelper('/res/me', null,
-                                lang.hitch(this, function(data) {
-                                  lang.mixin(this.user, data);
-                                  this.setUserInfo();
-                                }));
-      }
     },
 
-    setUserInfo: function() {
+    setUserInfo: function(user) {
+      lang.mixin(this.user, user);
+
       domAttr.set(this.nameDom, 'innerHTML', this.user.name);
 
       this.iconSelect.set('value', this.user.iconClass);
+      this.hoursStart.set('value', this.user.hoursStart);
+      this.hoursEnd.set('value', this.user.hoursEnd);
       this.breakTime.set('interval', this.user.breakTime);
+
+      if (this.user.clockState) {
+        domAttr.set(this.clockStateDom, 'innerHTML', 'You now on the'
+                    + ' clock.');
+        domStyle.set(this.clockStateDom, 'color', 'red');
+      } else {
+        domAttr.set(this.clockStateDom, 'innerHTML', '- Off the clock -');
+        domStyle.set(this.clockStateDom, 'color', '#999');
+      }
     }
   });
 });

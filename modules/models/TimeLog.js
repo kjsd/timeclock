@@ -1,5 +1,5 @@
 /**
- * @file User.js
+ * @file TimeLog.js
  *
  * @version $Id:$
  *
@@ -18,19 +18,13 @@ var u_ = {
 
 var scheme_ = {
   id: '',
-  accessToken: '',
-  refreshToken: '',
-  name: '',
-  breakTime: 3600,
-  iconClass: 'tcUserSilhouetteIcon',
-  hoursStart: '',
-  hoursEnd: '',
-  lastClockIn: '',
-  lastAccess: '',
-  lastLogin: ''
+  userId: '',
+  date: '',
+  clockInTime: '',
+  clockOutTime: ''
 };
 
-function User(args) {
+function TimeLog(args) {
   var me = this;
   Object.keys(scheme_).forEach(function(k) {
     if (!args.hasOwnProperty(k)) {
@@ -39,9 +33,10 @@ function User(args) {
       me[k] = args[k];
     }
   });
+  this.id = 1;
 };
 
-User.prototype.save = function() {
+TimeLog.prototype.save = function() {
   var me = this;
   Object.keys(scheme_).forEach(function(k) {
     if (!me.hasOwnProperty(k)) return;
@@ -50,15 +45,15 @@ User.prototype.save = function() {
   });
 };
 
-User.findOrCreate = function(args, hdl) {
+TimeLog.findOrCreate = function(args, hdl) {
   if (args.id == u_.id) {
-    hdl(false, new User(u_));
+    hdl(false, new TimeLog(u_));
   } else {
-    hdl(false, new User(args));
+    hdl(false, new TimeLog(args));
   }
 };
 
-User.findOne = function(args, hdl) {
+TimeLog.findOne = function(args, hdl) {
   var err = false;
   Object.keys(args).forEach(function(k) {
     if (args[k] != u_[k]) {
@@ -67,7 +62,7 @@ User.findOne = function(args, hdl) {
   });
 
   if (err) hdl(false, null);
-  else hdl(false, new User(u_));
+  else hdl(false, new TimeLog(u_));
 };
 
-module.exports = User;
+module.exports = TimeLog;

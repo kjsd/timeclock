@@ -25,6 +25,8 @@ var strip = function(user) {
   delete user.id;
   delete user.accessToken;
   delete user.refreshToken;
+  delete user.lastAccess;
+  delete user.lastLogin;
   return user;
 };
 

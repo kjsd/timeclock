@@ -33,6 +33,9 @@ define([
 
   return declare(ContentPane, {
     style: 'width: 100%; height: 100%;',
+
+    user: null,
+
     baseContainer: null,
     timeContent: null,
     leftContent: null,
@@ -44,8 +47,6 @@ define([
 
     userLoginHdl: null,
     userLogoutHdl: null,
-
-    logined: false,
 
     // @Override
     buildRendering: function() {
@@ -70,7 +71,7 @@ define([
 
       this.leftContent = new ContentPane({
         region: 'left',
-        style: 'text-align: center;'
+        style: 'text-align: right;'
       });
       this.baseContainer.addChild(this.leftContent);
 
@@ -82,7 +83,7 @@ define([
 
       this.rightContent = new ContentPane({
         region: 'right',
-        style: 'text-align: center;'
+        style: 'text-align: left;'
       });
       this.baseContainer.addChild(this.rightContent);
 
@@ -96,8 +97,9 @@ define([
       this.inherited(arguments);
 
       this.userLoginHdl = topic.subscribe(
-        'user/login', lang.hitch(this, function() {
-          this.logined = true;
+        'user/login', lang.hitch(this, function(data) {
+          this.user = data;
+          this.showClockContent(this.user.lastClockIn);
           query('.tcLoginWidget').forEach(function(n) {
             var w = registry.byNode(n);
             if (w) w.set('disabled', false);
@@ -105,7 +107,7 @@ define([
         }));
       this.userLogoutHdl = topic.subscribe(
         'user/logout', lang.hitch(this, function() {
-          this.logined = false;
+          this.user = null;
           query('.tcLoginWidget').forEach(function(n) {
             var w = registry.byNode(n);
             if (w) w.set('disabled', true);
@@ -116,6 +118,10 @@ define([
     // @Override
     startup: function() {
       this.inherited(arguments);
+
+      if (this.user) {
+        this.showClockContent(this.user.lastClockIn);
+      }
     },
 
     // @Override
@@ -124,8 +130,6 @@ define([
 
       this.timeUpdater = setInterval(
         lang.hitch(this, this.timeUpdate), 1000);
-
-      this.setClockInContent();
     },
 
     // @Override
@@ -143,6 +147,8 @@ define([
       this.timeContent = null;
       this.baseContainer = null;
 
+      this.user = null;
+
       this.inherited(arguments);
     },
 
@@ -158,18 +164,49 @@ define([
       }));
     },
 
-    setClockInContent: function() {
+    showClockContent: function(clockin) {
+      this.leftContent.set('content', null);
+      this.centerContent.set('content', null);
+      this.rightContent.set('content', null);
+
+      if (clockin) {
+        this.leftContent.set('content', clockin);
+
+        this.centerContent.set('content',
+                               '<img src="images/arrow.png" />');
+        this.rightContent.set(
+          'content', this.getClockContent(
+            'ClockOut', lang.hitch(this, function() {
+              request.autoRetryHelper.put(
+                '/res/clock/out', null, lang.hitch(this, function(data) {
+                  this.user.lastClockIn = '';
+                  this.rightContent.set('content',
+                                        data.date + 'T' + data.clockOutTime);
+                }));
+            })));
+      } else {
+        this.centerContent.set(
+          'content', this.getClockContent(
+            'ClockIn', lang.hitch(this, function() {
+              request.autoRetryHelper.put(
+                '/res/clock/in', null, lang.hitch(this, function(data) {
+                  this.user.lastClockIn = data.date + 'T' + data.clockInTime;
+                  this.showClockContent(this.user.lastClockIn);
+                }));
+            })));
+      }
+    },
+
+    getClockContent: function(label, onClick) {
       var btn = new Button({
-        disabled: !this.logined,
+        disabled: !this.user,
         class: 'tcLoginWidget',
         style: 'font-size: 3em;',
-        label: 'ClockIn',
-        onClick: function() {
-          console.log('tbd.');
-        }
+        label: label,
+        onClick: onClick
       });
 
-      this.centerContent.set('content', btn);
+      return btn;
     }
   });
 });
