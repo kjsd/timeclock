@@ -14,10 +14,11 @@
 define([
   'dojo/_base/lang',
   'dojo/request/xhr',
+  'dojo/json',
   'dojo/Deferred',
   'dojokj/ErrorDialog',
   'timeclock/token',
-], function(lang, xhr, Deferred, Dialog, token) {
+], function(lang, xhr, JSON, Deferred, Dialog, token) {
 
   var giveUp = function(err) {
     var msg = 'Error: ';
@@ -86,6 +87,11 @@ define([
     var defaultHeader = {
       'Authorization': 'Bearer ' + token.get()
     };
+
+    if (typeof(options.data) == 'object') {
+      defaultHeader['Content-Type'] = 'application/json';
+      options.data = JSON.stringify(options.data);
+    }
 
     lang.mixin(defaultHeader, options.headers);
     options.headers = defaultHeader;

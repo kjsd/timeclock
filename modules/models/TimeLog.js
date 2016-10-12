@@ -13,8 +13,8 @@
  ***********************************************************************/
 // stub
 
-var u_ = {
-};
+var d_ = [];
+var idx_ = 0;
 
 var scheme_ = {
   id: '',
@@ -33,21 +33,22 @@ function TimeLog(args) {
       me[k] = args[k];
     }
   });
-  this.id = 1;
+  this.id = ++idx_;
 };
 
 TimeLog.prototype.save = function() {
   var me = this;
+  d_[me.id] = {};
   Object.keys(scheme_).forEach(function(k) {
     if (!me.hasOwnProperty(k)) return;
 
-    u_[k] = me[k];
+    d_[me.id][k] = me[k];
   });
 };
 
 TimeLog.findOrCreate = function(args, hdl) {
-  if (args.id == u_.id) {
-    hdl(false, new TimeLog(u_));
+  if (d_[args.id]) {
+    hdl(false, new TimeLog(d_[args.id]));
   } else {
     hdl(false, new TimeLog(args));
   }

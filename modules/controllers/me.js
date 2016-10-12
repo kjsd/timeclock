@@ -35,8 +35,6 @@ router.get('/', function(req, res) {
 });
 
 router.put('/', function(req, res) {
-  console.log(typeof(req.body.useHours));
-
   Object.keys(req.user).forEach(function(k) {
     if (k == 'id') return;
     if (!req.body.hasOwnProperty(k)) return;

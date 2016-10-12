@@ -53,9 +53,6 @@ define([
           var newVal = (typeof(formatter) == 'function') ? formatter(v): v;
           if (newVal == this.user[attr]) return;
 
-          console.log('onChange(' + attr + '): ' + this.user[attr]
-                      + ' -> ' + newVal);
-
           var opt = { data: {} };
           opt.data[attr] = newVal;
           request.autoRetryHelper.put(
