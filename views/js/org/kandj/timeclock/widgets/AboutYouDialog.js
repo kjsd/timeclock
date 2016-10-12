@@ -21,20 +21,22 @@ define([
   'dojo/topic',
   'dijit/form/Select',
   'dijit/form/Button',
+  'dijit/form/CheckBox',
   'dijit/form/TimeTextBox',
   'dojokj/IntervalTextBox',
   'dojokj/OKDialog',
   'timeclock/models/User',
   'timeclock/request'
 ], function(declare, lang, domConstruct, domAttr, domStyle, stamp,
-            topic, Select, Button, TimeTextBox, IntervalTextBox,
-            Dialog, User, request) {
+            topic, Select, Button, CheckBox, TimeTextBox,
+            IntervalTextBox, Dialog, User, request) {
 
   return declare(Dialog, {
     style: 'margin: 0; padding 0;',
     user: null,
     nameDom: null,
     clockStateDom: null,
+    useHours: null,
     hoursStart: null,
     hoursEnd: null,
     breakTime: null,
@@ -50,6 +52,9 @@ define([
         return lang.hitch(this, function(v) {
           var newVal = (typeof(formatter) == 'function') ? formatter(v): v;
           if (newVal == this.user[attr]) return;
+
+          console.log('onChange(' + attr + '): ' + this.user[attr]
+                      + ' -> ' + newVal);
 
           var opt = { data: {} };
           opt.data[attr] = newVal;
@@ -116,9 +121,21 @@ define([
       var tbl = domConstruct.create('table', null, main);
 
       var tr = domConstruct.create('tr', null, tbl);
-      domConstruct.place('<td>Your hours: </td>', tr);
+      var td = domConstruct.create('td', null, tr);
+      this.useHours = new CheckBox({
+        name: 'useHours',
+        checked: false,
+        onChange: lang.hitch(this, function(v) {
+          this.hoursStart.set('disabled', !v);
+          this.hoursEnd.set('disabled', !v);
+          userUpdater('useHours')(v);
+        })
+      });
+      domConstruct.place(this.useHours.domNode, td);
+      domConstruct.place('<label for="useHours">Your hours: </label>', td);
 
       this.hoursStart = new TimeTextBox({
+        disabled: true,
         style: 'width: 100px',
         constraints: {
           timePattern: 'HH:mm'
@@ -128,6 +145,7 @@ define([
         })
       });
       this.hoursEnd = new TimeTextBox({
+        disabled: true,
         style: 'width: 100px',
         constraints: {
           timePattern: 'HH:mm'
@@ -137,7 +155,7 @@ define([
         })
       });
 
-      var td = domConstruct.create('td', null, tr);
+      td = domConstruct.create('td', null, tr);
       domConstruct.place(this.hoursStart.domNode, td);
       domConstruct.create('span', {
         innerHTML: '-',
@@ -188,6 +206,7 @@ define([
       this.clockStateDom = null;
       this.hoursStart = null;
       this.hoursEnd = null;
+      this.useHours = null;
       this.breakTime = null;
       this.iconSelect = null;
 
@@ -205,7 +224,10 @@ define([
       domAttr.set(this.nameDom, 'innerHTML', this.user.name);
 
       this.iconSelect.set('value', this.user.iconClass);
+      this.useHours.set('checked', this.user.useHours);
+      this.hoursStart.set('disabled', !this.user.useHours);
       this.hoursStart.set('value', this.user.hoursStart);
+      this.hoursEnd.set('disabled', !this.user.useHours);
       this.hoursEnd.set('value', this.user.hoursEnd);
       this.breakTime.set('interval', this.user.breakTime);
 

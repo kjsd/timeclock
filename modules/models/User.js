@@ -23,9 +23,9 @@ var scheme_ = {
   name: '',
   breakTime: 3600,
   iconClass: 'tcUserSilhouetteIcon',
+  useHours: false,
   hoursStart: '',
   hoursEnd: '',
-  lastClockIn: '',
   lastAccess: '',
   lastLogin: ''
 };

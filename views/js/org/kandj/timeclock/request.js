@@ -86,6 +86,7 @@ define([
     var defaultHeader = {
       'Authorization': 'Bearer ' + token.get()
     };
+
     lang.mixin(defaultHeader, options.headers);
     options.headers = defaultHeader;
 

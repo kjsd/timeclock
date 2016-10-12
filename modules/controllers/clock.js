@@ -58,9 +58,6 @@ router.put('/in', function(req, res) {
     });
     newLog.save();
 
-    req.user.lastClockIn = dateFormat(now, 'isoDateTime');
-    req.user.save();
-
     res.json(newLog);
   });
 });
@@ -83,9 +80,6 @@ router.put('/out', function(req, res) {
 
     log.clockOutTime = dateFormat(now, 'isoTime');
     log.save();
-
-    req.user.lastClockIn = '';
-    req.user.save();
 
     res.json(log);
   });
