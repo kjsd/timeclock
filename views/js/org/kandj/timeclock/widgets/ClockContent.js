@@ -71,7 +71,7 @@ define([
 
       this.leftContent = new ContentPane({
         region: 'left',
-        style: 'text-align: right;'
+        style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.leftContent);
 
@@ -83,7 +83,7 @@ define([
 
       this.rightContent = new ContentPane({
         region: 'right',
-        style: 'text-align: left;'
+        style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.rightContent);
 
@@ -99,7 +99,7 @@ define([
       this.userLoginHdl = topic.subscribe(
         'user/login', lang.hitch(this, function(data) {
           this.user = data;
-          this.showClockContent(this.user.lastClockIn);
+          this.showClockContent();
           query('.tcLoginWidget').forEach(function(n) {
             var w = registry.byNode(n);
             if (w) w.set('disabled', false);
@@ -119,17 +119,15 @@ define([
     startup: function() {
       this.inherited(arguments);
 
-      if (this.user) {
-        this.showClockContent(this.user.lastClockIn);
-      }
+      this.timeUpdater = setInterval(
+        lang.hitch(this, this.timeUpdate), 1000);
     },
 
     // @Override
     onShow: function() {
       this.inherited(arguments);
 
-      this.timeUpdater = setInterval(
-        lang.hitch(this, this.timeUpdate), 1000);
+      this.showClockContent();
     },
 
     // @Override
@@ -164,37 +162,50 @@ define([
       }));
     },
 
-    showClockContent: function(clockin) {
+    showClockContent: function() {
+      request.autoRetryHelper(
+        '/res/clock/incomplete', null,
+        lang.hitch(this, function(data) {
+          this.showClockOutContent(data.clockInTime);
+        }),
+        lang.hitch(this, function(err) {
+          if (err.response.status != 404) return;
+
+          this.showClockInContent();
+        }));
+    },
+
+    showClockInContent: function() {
       this.leftContent.set('content', null);
-      this.centerContent.set('content', null);
       this.rightContent.set('content', null);
 
-      if (clockin) {
-        this.leftContent.set('content', clockin);
+      this.centerContent.set(
+        'content', this.getClockContent(
+          'ClockIn', lang.hitch(this, function() {
+            request.autoRetryHelper.put(
+              '/res/clock/in', null, lang.hitch(this, function(data) {
+                this.showClockOutContent(data.clockInTime);
+              }));
+          })));
 
-        this.centerContent.set('content',
-                               '<img src="images/arrow.png" />');
-        this.rightContent.set(
-          'content', this.getClockContent(
-            'ClockOut', lang.hitch(this, function() {
-              request.autoRetryHelper.put(
-                '/res/clock/out', null, lang.hitch(this, function(data) {
-                  this.user.lastClockIn = '';
-                  this.rightContent.set('content',
-                                        data.date + 'T' + data.clockOutTime);
-                }));
-            })));
-      } else {
-        this.centerContent.set(
-          'content', this.getClockContent(
-            'ClockIn', lang.hitch(this, function() {
-              request.autoRetryHelper.put(
-                '/res/clock/in', null, lang.hitch(this, function(data) {
-                  this.user.lastClockIn = data.date + 'T' + data.clockInTime;
-                  this.showClockContent(this.user.lastClockIn);
-                }));
-            })));
-      }
+      this.baseContainer.resize();
+    },
+
+    showClockOutContent: function(clockInTimeStr) {
+      this.leftContent.set('content', clockInTimeStr);
+      this.centerContent.set('content',
+                             '<img src="images/arrow.png" />');
+      this.rightContent.set(
+        'content', this.getClockContent(
+          'ClockOut', lang.hitch(this, function() {
+            request.autoRetryHelper.put(
+              '/res/clock/out', null, lang.hitch(this, function(data) {
+                this.rightContent.set('content',
+                                      data.date + 'T' + data.clockOutTime);
+              }));
+          })));
+
+      this.baseContainer.resize();
     },
 
     getClockContent: function(label, onClick) {

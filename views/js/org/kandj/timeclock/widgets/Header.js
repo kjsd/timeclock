@@ -99,8 +99,7 @@ define([
       this.userDirtyHdl = topic.subscribe(
         'user/dirty', lang.hitch(this, function(user) {
           this.setUserInfo(user);
-        })
-      );
+        }));
       this.userLogoutHdl = topic.subscribe(
         'user/logout', lang.hitch(this, function() {
           this.setUserInfo(new User());
@@ -108,8 +107,7 @@ define([
             var w = registry.byNode(n);
             if (w) w.set('disabled', true);
           });
-        })
-      );
+        }));
     },
 
     // @Override
@@ -125,8 +123,7 @@ define([
             var w = registry.byNode(n);
             if (w) w.set('disabled', false);
           });
-        })
-      );
+        }));
     },
 
     // @Override

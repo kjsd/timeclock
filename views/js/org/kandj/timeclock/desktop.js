@@ -19,36 +19,37 @@ define([
   'timeclock/widgets/Header'
 ], function(lang, array, topic, BorderContainer, Header) {
 
+  var user;
+  var currentContent;
+
+  var base = new BorderContainer({
+    style: 'width: 100%; height: 100%;',
+    gutters: false
+  });
+
+  var showBody = function(contentName) {
+    if (currentContent == contentName) return;
+
+    array.forEach(base.getChildren(), function(child) {
+      if (child.region == 'center') {
+        base.removeChild(child);
+        child.destroyRecursive();
+      }
+    });
+    require([contentName], function(cont) {
+      base.addChild(new cont({
+        region: 'center',
+        user: user
+      }));
+      currentContent = contentName;
+    });
+  };
+
   return {
     startup: function() {
-      var user;
       topic.subscribe('user/login', function(data) {
         user = data;
       });
-
-      var base = new BorderContainer({
-        style: 'width: 100%; height: 100%;',
-        gutters: false
-      });
-
-      var currentContent;
-      var showBody = function(contentName) {
-        if (currentContent == contentName) return;
-
-        array.forEach(base.getChildren(), function(child) {
-          if (child.region == 'center') {
-            base.removeChild(child);
-            child.destroyRecursive();
-          }
-        });
-        require([contentName], function(cont) {
-          base.addChild(new cont({
-            region: 'center',
-            user: user
-          }));
-          currentContent = contentName;
-        });
-      };
 
       topic.subscribe('content/requestToShow', function(contName) {
         switch (contName) {

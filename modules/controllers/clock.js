@@ -16,73 +16,62 @@ var router = express.Router();
 var dateFormat = require('dateformat');
 var TimeLog = require('models/TimeLog');
 
-router.get('/', function(req, res) {
+
+var getIncompleteLog = function(req, res, found, notFound) {
   TimeLog.findOne({
     userId: req.user.id,
-    date: dateFormat(new Date(), 'isoDate')
+    incomplete: true
   }, function(err, log) {
     if (err) {
       res.sendStatus(503);
       return;
     }
-    if (!log) {
-      res.sendStatus(404);
-      return;
-    }
 
-    res.json(log);
+    if (log) found(log);
+    else notFound();
   });
+};
+
+router.get('/incomplete', function(req, res) {
+  getIncompleteLog(req, res,
+                   function(log) { res.json(log); },
+                   function() { res.sendStatus(404); });
 });
 
 router.put('/in', function(req, res) {
   var now = new Date();
 
-  TimeLog.findOne({
-    userId: req.user.id,
-    date: dateFormat(now, 'isoDate')
-  }, function(err, log) {
-    if (err) {
-      res.sendStatus(503);
-      return;
-    }
-    if (log) {
-      // already clockin
-      res.sendStatus(403);
-      return;
-    }
+  getIncompleteLog(
+    req, res,
+    function(log) { res.sendStatus(403); },
+    function() {
+      var newLog = new TimeLog({
+        userId: req.user.id,
+        date: dateFormat(now, 'isoDate'),
+        clockInTime: dateFormat(now, 'isoTime'),
+        incomplete: true
+      });
+      newLog.save();
 
-    var newLog = new TimeLog({
-      userId: req.user.id,
-      date: dateFormat(now, 'isoDate'),
-      clockInTime: dateFormat(now, 'isoTime')
+      res.json(newLog);
     });
-    newLog.save();
-
-    res.json(newLog);
-  });
 });
 
 router.put('/out', function(req, res) {
   var now = new Date();
 
-  TimeLog.findOrCreate({
-    date: dateFormat(now, 'isoDate')
-  }, function(err, log) {
-    if (err) {
-      res.sendStatus(503);
-      return;
-    }
-    if (log.clockOutTime) {
-      // already clockout
-      res.sendStatus(403);
-      return;
-    }
+  getIncompleteLog(
+    req, res,
+    function(log) {
+      log.clockOutTime = dateFormat(now, 'isoTime');
+      log.incomplete = false;
+      log.save();
 
-    log.clockOutTime = dateFormat(now, 'isoTime');
-    log.save();
-
-    res.json(log);
-  });
+      res.json(log);
+    },
+    function() {
+      res.sendStatus(404);
+    });
 });
 
 //tbd.

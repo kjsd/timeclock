@@ -17,11 +17,12 @@ var d_ = [];
 var idx_ = 0;
 
 var scheme_ = {
-  id: '',
+  id: 0,
   userId: '',
   date: '',
   clockInTime: '',
-  clockOutTime: ''
+  clockOutTime: '',
+  incomplete: false
 };
 
 function TimeLog(args) {
@@ -33,37 +34,37 @@ function TimeLog(args) {
       me[k] = args[k];
     }
   });
-  this.id = ++idx_;
 };
 
 TimeLog.prototype.save = function() {
-  var me = this;
-  d_[me.id] = {};
-  Object.keys(scheme_).forEach(function(k) {
-    if (!me.hasOwnProperty(k)) return;
+  if (!this.id) this.id = idx_++;
 
-    d_[me.id][k] = me[k];
-  });
+  d_[this.id] = Object.assign({}, this);
 };
 
 TimeLog.findOrCreate = function(args, hdl) {
-  if (d_[args.id]) {
-    hdl(false, new TimeLog(d_[args.id]));
-  } else {
-    hdl(false, new TimeLog(args));
-  }
+  // tbd.
+  hdl(false, new TimeLog(args));
 };
 
 TimeLog.findOne = function(args, hdl) {
-  var err = false;
-  Object.keys(args).forEach(function(k) {
-    if (args[k] != u_[k]) {
-      err = true;
-    }
-  });
+  var found = null;
 
-  if (err) hdl(false, null);
-  else hdl(false, new TimeLog(u_));
+  for (var i = 0; i < d_.length; i++) {
+    var dismiss = false;
+    Object.keys(args).forEach(function(k) {
+      if (args[k] != d_[i][k]) {
+        dismiss = true;
+      }
+    });
+    if (!dismiss) {
+      found = d_[i];
+      break;
+    }
+  }
+
+  if (found) hdl(false, new TimeLog(found));
+  else hdl(false, null);
 };
 
 module.exports = TimeLog;

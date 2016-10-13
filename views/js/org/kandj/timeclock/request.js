@@ -34,9 +34,13 @@ define([
     window.alert(msg);
   };
 
+  var showLogined = false;
   var getRetryBack = function(defer, useDefaultErrBack = true) {
     return function(err) {
       var showLoginDialog = function(title, msg) {
+        if (showLogined) return;
+        showLogined = true;
+
         new Dialog({
           title: title,
           content: msg,
@@ -49,7 +53,6 @@ define([
       switch (err.response.status) {
       case 401:
         if (!token.get()) {
-          defer.reject(err);
           showLoginDialog('Welcome!',
                           '<h3>This site provides the Web-Based Timeclock'
                           + ' and recording time log for you the'
@@ -62,7 +65,6 @@ define([
           token.retrieve().then(function() {
             defer.progress('token updated. need retry');
           }, function(e) {
-            defer.reject(e);
             showLoginDialog('Login',
                             'Authorization expired. Please login'
                             + ' again.');
