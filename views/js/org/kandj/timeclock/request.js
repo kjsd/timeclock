@@ -35,41 +35,30 @@ define([
   };
 
   var showLogined = false;
+  var showLoginDialog = function(title, msg) {
+    if (showLogined) return;
+    showLogined = true;
+
+    new Dialog({
+      title: title,
+      content: msg,
+      onOKClick: function() {
+        window.location.href = '/auth/google';
+      }
+    }).show();
+  };
+
   var getRetryBack = function(defer, useDefaultErrBack = true) {
     return function(err) {
-      var showLoginDialog = function(title, msg) {
-        if (showLogined) return;
-        showLogined = true;
-
-        new Dialog({
-          title: title,
-          content: msg,
-          onOKClick: function() {
-            window.location.href = '/auth/google';
-          }
-        }).show();
-      };
-
       switch (err.response.status) {
       case 401:
-        if (!token.get()) {
-          showLoginDialog('Welcome!',
-                          '<h3>This site provides the Web-Based Timeclock'
-                          + ' and recording time log for you the'
-                          + ' worker.</h3>'
-                          + 'You can start so easy! It just only a Google'
-                          + ' account what you need. Please press'
-                          + ' `OK\' to login and I will redirect you'
-                          + ' to Google login page.');
-        } else {
-          token.retrieve().then(function() {
-            defer.progress('token updated. need retry');
-          }, function(e) {
-            showLoginDialog('Login',
-                            'Authorization expired. Please login'
-                            + ' again.');
-          });
-        }
+        token.retrieve().then(function() {
+          defer.progress('token updated. need retry');
+        }, function(e) {
+          showLoginDialog('Login',
+                          'Authorization expired. Please login'
+                          + ' again.');
+        });
         break;
 
       default:
@@ -80,6 +69,20 @@ define([
   };
 
   function request(url, options, useDefaultErrBack = true) {
+    var defer = new Deferred();
+
+    if (!token.get()) {
+      showLoginDialog('Welcome!',
+                      '<h3>This site provides the Web-Based Timeclock'
+                      + ' and recording time log for you the'
+                      + ' worker.</h3>'
+                      + 'You can start so easy! It just only a Google'
+                      + ' account what you need. Please press'
+                      + ' `OK\' to login and I will redirect you'
+                      + ' to Google login page.');
+      return defer.promise;
+    }
+
     var defaultOptions = {
       handleAs: 'json'
     };
@@ -98,7 +101,6 @@ define([
     lang.mixin(defaultHeader, options.headers);
     options.headers = defaultHeader;
 
-    var defer = new Deferred();
     xhr(url, options).then(function(v) {
       defer.resolve(v);
     }, getRetryBack(defer, useDefaultErrBack));
