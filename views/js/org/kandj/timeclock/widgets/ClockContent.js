@@ -38,9 +38,7 @@ define([
 
     baseContainer: null,
     timeContent: null,
-    leftContent: null,
     centerContent: null,
-    rightContent: null,
 
     dateDom: null,
     timeDom: null,
@@ -69,23 +67,11 @@ define([
 
       this.baseContainer.addChild(this.timeContent);
 
-      this.leftContent = new ContentPane({
-        region: 'left',
-        style: 'text-align: center;'
-      });
-      this.baseContainer.addChild(this.leftContent);
-
       this.centerContent = new ContentPane({
         region: 'center',
         style: 'text-align: center;'
       });
       this.baseContainer.addChild(this.centerContent);
-
-      this.rightContent = new ContentPane({
-        region: 'right',
-        style: 'text-align: center;'
-      });
-      this.baseContainer.addChild(this.rightContent);
 
       this.timeUpdate();
 
@@ -139,9 +125,7 @@ define([
 
       this.dateDom = null;
       this.timeDom = null;
-      this.rightContent = null;
       this.centerContent = null;
-      this.leftContent = null;
       this.timeContent = null;
       this.baseContainer = null;
 
@@ -176,39 +160,37 @@ define([
     },
 
     showClockInContent: function() {
-      this.leftContent.set('content', null);
-      this.rightContent.set('content', null);
-
       this.centerContent.set(
-        'content', this.getClockContent(
+        'content', this.getClockBtn(
           'ClockIn', lang.hitch(this, function() {
             request.autoRetryHelper.put(
               '/res/clock/in', null, lang.hitch(this, function(data) {
                 this.showClockOutContent(data.clockInTime);
               }));
           })));
-
-      this.baseContainer.resize();
     },
 
     showClockOutContent: function(clockInTimeStr) {
-      this.leftContent.set('content', clockInTimeStr);
-      this.centerContent.set('content',
-                             '<img src="images/arrow.png" />');
-      this.rightContent.set(
-        'content', this.getClockContent(
-          'ClockOut', lang.hitch(this, function() {
-            request.autoRetryHelper.put(
-              '/res/clock/out', null, lang.hitch(this, function(data) {
-                this.rightContent.set('content',
-                                      data.date + 'T' + data.clockOutTime);
-              }));
-          })));
+      var main = domConstruct.create('div');
+      domConstruct.create('span', {
+        innerHTML: clockInTimeStr
+      }, main);
+      domConstruct.create('span', {
+        class: 'tcArrowIcon'
+      }, main);
 
-      this.baseContainer.resize();
+      var btn = this.getClockBtn(
+        'ClockOut', lang.hitch(this, function() {
+          request.autoRetryHelper.put(
+            '/res/clock/out', null, lang.hitch(this, function(data) {
+            }));
+        }));
+      domConstruct.place(btn.domNode, main);
+
+      this.centerContent.set('content', main);
     },
 
-    getClockContent: function(label, onClick) {
+    getClockBtn: function(label, onClick) {
       var btn = new Button({
         disabled: !this.user,
         class: 'tcLoginWidget',

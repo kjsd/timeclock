@@ -443,3 +443,14 @@ html, body {
    width: 16px;
    height: 16px;
 }
+
+.tcArrowIcon
+{
+   background-image: url("../images/arrow.png");
+   background-repeat: no-repeat;
+   background-position: center;
+   display: inline-block;
+   vertical-align: middle;
+   width: 32px;
+   height: 32px;
+}
