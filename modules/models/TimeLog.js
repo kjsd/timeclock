@@ -19,10 +19,8 @@ var idx_ = 0;
 var scheme_ = {
   id: 0,
   userId: '',
-  date: '',
   clockInTime: '',
-  clockOutTime: '',
-  incomplete: false
+  clockOutTime: ''
 };
 
 function TimeLog(args) {

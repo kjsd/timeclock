@@ -1,4 +1,4 @@
-/**
+ /**
  * @file clock.js
  *
  * @version $Id:$
@@ -13,14 +13,13 @@
  ***********************************************************************/
 var express = require('express');
 var router = express.Router();
-var dateFormat = require('dateformat');
 var TimeLog = require('models/TimeLog');
 
 
 var getIncompleteLog = function(req, res, found, notFound) {
   TimeLog.findOne({
     userId: req.user.id,
-    incomplete: true
+    clockOutTime: ''
   }, function(err, log) {
     if (err) {
       res.sendStatus(503);
@@ -47,9 +46,8 @@ router.put('/in', function(req, res) {
     function() {
       var newLog = new TimeLog({
         userId: req.user.id,
-        date: dateFormat(now, 'isoDate'),
-        clockInTime: dateFormat(now, 'isoTime'),
-        incomplete: true
+        clockInTime: now.toISOString(),
+        clockOutTime: ''
       });
       newLog.save();
 
@@ -63,8 +61,7 @@ router.put('/out', function(req, res) {
   getIncompleteLog(
     req, res,
     function(log) {
-      log.clockOutTime = dateFormat(now, 'isoTime');
-      log.incomplete = false;
+      log.clockOutTime = now.toISOString();
       log.save();
 
       res.json(log);
