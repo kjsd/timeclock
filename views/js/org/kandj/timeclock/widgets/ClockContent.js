@@ -166,6 +166,8 @@ define([
             request.autoRetryHelper.put(
               '/res/clock/in', null, lang.hitch(this, function(data) {
                 this.showClockOutContent(data.clockInTime);
+
+                topic.publish('clock/in', data.clockInTime);
               }));
           })));
     },
@@ -178,14 +180,19 @@ define([
       domConstruct.create('span', {
         class: 'tcArrowIcon'
       }, main);
+      var refBtn = domConstruct.create('span', null, main);
 
       var btn = this.getClockBtn(
         'ClockOut', lang.hitch(this, function() {
           request.autoRetryHelper.put(
             '/res/clock/out', null, lang.hitch(this, function(data) {
+              domConstruct.empty(refBtn);
+              domAttr.set(refBtn, 'innerHTML', data.clockOutTime);
+
+              topic.publish('clock/out', data.clockOutTime);
             }));
         }));
-      domConstruct.place(btn.domNode, main);
+      domConstruct.place(btn.domNode, refBtn);
 
       this.centerContent.set('content', main);
     },

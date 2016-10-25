@@ -48,6 +48,13 @@ html, body {
   float: none;
 }
 
+.soria .dijitTooltipContainer {
+    border: solid black 1px;
+    background: #fdfbf2;
+    color: black;
+    font-size: small;
+}
+
 .tcRed
 {
    color: red;

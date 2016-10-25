@@ -14,10 +14,10 @@
 // stub
 
 var d_ = [];
-var idx_ = 0;
+var idx_ = 1;
 
 var scheme_ = {
-  id: 0,
+  id: null,
   userId: '',
   clockInTime: '',
   clockOutTime: ''
@@ -49,6 +49,8 @@ TimeLog.findOne = function(args, hdl) {
   var found = null;
 
   for (var i = 0; i < d_.length; i++) {
+    if (!d_[i]) continue;
+
     var dismiss = false;
     Object.keys(args).forEach(function(k) {
       if (args[k] != d_[i][k]) {

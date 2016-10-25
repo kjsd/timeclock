@@ -15,6 +15,7 @@ define([
   'dojo/_base/declare',
   'dojo/_base/lang',
   'dojo/dom-class',
+  'dojo/dom-style',
   'dojo/query',
   'dojo/topic',
   'dijit/registry',
@@ -26,15 +27,17 @@ define([
   'timeclock/widgets/UserMenu',
   'timeclock/models/User',
   'timeclock/request'
-], function(declare, lang, domClass, query, topic, registry, Toolbar,
-            ToolbarSeparator, DropDownButton, Button, AboutMeDialog,
-            UserMenu, User, request) {
+], function(declare, lang, domClass, domStyle, query, topic, registry,
+            Toolbar, ToolbarSeparator, DropDownButton, Button,
+            AboutMeDialog, UserMenu, User, request) {
   return declare(Toolbar, {
     style: 'margin: 0; padding: 0;',
     user: null,
     userBtn: null,
     userDirtyHdl: null,
     userLogoutHdl: null,
+    clockInHdl: null,
+    clockOutHdl: null,
 
     // @Override
     buildRendering: function() {
@@ -90,6 +93,16 @@ define([
         showLabel: false,
         dropDown: new AboutMeDialog({ style: 'display: none;' })
       }));
+
+      btn = new Button({
+        label: 'On the clock',
+        iconClass: 'tcClockIcon',
+        style: 'float: right; display: none;',
+        disabled: true,
+        showLabel: false
+      });
+      domClass.add(btn.domNode, 'tcClockWidget');
+      this.addChild(btn);
     },
 
     // @Override
@@ -108,6 +121,17 @@ define([
             if (w) w.set('disabled', true);
           });
         }));
+
+      this.clockInHdl = topic.subscribe('clock/in', function() {
+        query('.tcClockWidget').forEach(function(n) {
+	      domStyle.set(n, 'display', 'block');
+        });
+      });
+      this.clockOutHdl = topic.subscribe('clock/out', function() {
+        query('.tcClockWidget').forEach(function(n) {
+	      domStyle.set(n, 'display', 'none');
+        });
+      });
     },
 
     // @Override
@@ -128,6 +152,9 @@ define([
 
     // @Override
     destroy: function() {
+      if (this.clockInHdl) this.clockInHdl.remove();
+      if (this.clockOutHdl) this.clockOutHdl.remove();
+      if (this.userLogoutHdl) this.userLogoutHdl.remove();
       if (this.userDirtyHdl) this.userDirtyHdl.remove();
       if (this.userLogoutHdl) this.userLogoutHdl.remove();
 

@@ -22,7 +22,6 @@ define([
     breakTime: 3600, // 1 hour
     hoursStart: '',
     hoursEnd: '',
-    lastClockIn: '',
 
     constructor: function(args) {
       lang.mixin(this, args);

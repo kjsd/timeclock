@@ -228,14 +228,17 @@ define([
       this.hoursEnd.set('value', this.user.hoursEnd);
       this.breakTime.set('interval', this.user.breakTime);
 
-      if (this.user.clockState) {
-        domAttr.set(this.clockStateDom, 'innerHTML', 'You now on the'
-                    + ' clock.');
-        domStyle.set(this.clockStateDom, 'color', 'red');
-      } else {
-        domAttr.set(this.clockStateDom, 'innerHTML', '- Off the clock -');
-        domStyle.set(this.clockStateDom, 'color', '#999');
-      }
+      request.autoRetryHelper(
+        '/res/clock/incomplete', null,
+        lang.hitch(this, function(data) {
+          domAttr.set(this.clockStateDom, 'innerHTML', 'You now on the'
+                      + ' clock.');
+          domStyle.set(this.clockStateDom, 'color', 'red');
+        }),
+        lang.hitch(this, function(err) {
+          domAttr.set(this.clockStateDom, 'innerHTML', '- Off the clock -');
+          domStyle.set(this.clockStateDom, 'color', '#999');
+        }));
     }
   });
 });
