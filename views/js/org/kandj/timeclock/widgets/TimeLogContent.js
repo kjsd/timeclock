@@ -15,8 +15,9 @@ define([
   'dojo/_base/declare',
   'dojo/_base/lang',
   'dijit/layout/ContentPane',
-  'dijit/layout/BorderContainer'
-], function(declare, lang, ContentPane, BorderContainer) {
+  'dijit/layout/BorderContainer',
+  'timeclock/request',
+], function(declare, lang, ContentPane, BorderContainer, request) {
   return declare(ContentPane, {
     
     // @Override
@@ -29,6 +30,13 @@ define([
     // @Override
     startup: function() {
       this.inherited(arguments);
+    },
+
+    // @Override
+    onShow: function() {
+      this.inherited(arguments);
+
+      request.autoRetryHelper.get('/res/clock/log');
     },
 
     // @Override

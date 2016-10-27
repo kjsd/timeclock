@@ -58,13 +58,33 @@ TimeLog.findOne = function(args, hdl) {
       }
     });
     if (!dismiss) {
-      found = d_[i];
+      found = new TimeLog(d_[i]);
       break;
     }
   }
 
-  if (found) hdl(false, new TimeLog(found));
-  else hdl(false, null);
+  hdl(false, found);
+};
+
+TimeLog.find = function(args, hdl) {
+  var found = null;
+
+  for (var i = 0; i < d_.length; i++) {
+    if (!d_[i]) continue;
+
+    var dismiss = false;
+    Object.keys(args).forEach(function(k) {
+      if (args[k] != d_[i][k]) {
+        dismiss = true;
+      }
+    });
+    if (!dismiss) {
+      if (!found) found = [];
+      found.push(d_[i]);
+    }
+  }
+
+  hdl(false, found);
 };
 
 module.exports = TimeLog;

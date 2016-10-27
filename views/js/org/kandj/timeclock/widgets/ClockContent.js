@@ -160,16 +160,21 @@ define([
     },
 
     showClockInContent: function() {
-      this.centerContent.set(
-        'content', this.getClockBtn(
-          'ClockIn', lang.hitch(this, function() {
-            request.autoRetryHelper.put(
-              '/res/clock/in', null, lang.hitch(this, function(data) {
-                this.showClockOutContent(data.clockInTime);
+      var btn = this.getClockBtn(
+        'ClockIn', lang.hitch(this, function() {
+          btn.set('disabled', true);
 
-                topic.publish('clock/in', data.clockInTime);
-              }));
-          })));
+          request.autoRetryHelper.put(
+            '/res/clock/in', null,
+            lang.hitch(this, function(data) {
+              this.showClockOutContent(data.clockInTime);
+              topic.publish('clock/in', data.clockInTime);
+            }),
+            lang.hitch(this, function(err) {
+              btn.set('disabled', false);
+            }));
+        }));
+      this.centerContent.set('content', btn);
     },
 
     showClockOutContent: function(clockInTimeStr) {
@@ -184,12 +189,18 @@ define([
 
       var btn = this.getClockBtn(
         'ClockOut', lang.hitch(this, function() {
+          btn.set('disabled', true);
+
           request.autoRetryHelper.put(
-            '/res/clock/out', null, lang.hitch(this, function(data) {
+            '/res/clock/out', null,
+            lang.hitch(this, function(data) {
               domConstruct.empty(refBtn);
               domAttr.set(refBtn, 'innerHTML', data.clockOutTime);
 
               topic.publish('clock/out', data.clockOutTime);
+            }),
+            lang.hitch(this, function(err) {
+              btn.set('disabled', false);
             }));
         }));
       domConstruct.place(btn.domNode, refBtn);

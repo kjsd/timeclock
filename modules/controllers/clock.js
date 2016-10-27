@@ -71,7 +71,7 @@ router.put('/out', function(req, res) {
     });
 });
 
-//tbd.
-// router.use('/log', require('controllers/timelog'));
+
+router.use('/log', require('controllers/timelog'));
 
 module.exports = router;
